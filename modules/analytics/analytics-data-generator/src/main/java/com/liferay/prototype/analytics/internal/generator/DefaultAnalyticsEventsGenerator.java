@@ -1,6 +1,7 @@
 package com.liferay.prototype.analytics.internal.generator;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUID;
@@ -164,12 +165,11 @@ public class DefaultAnalyticsEventsGenerator
 
 		random.ints(4, 1, 200).forEach(value -> {
 			sb.append(value);
-			sb.append(value);
+			sb.append(CharPool.PERIOD);
 		});
 
-		sb.stringAt(sb.length() - 1);
-
-		messageContext.setIpAddress(sb.toString());
+		messageContext.setIpAddress(
+			sb.toString().substring(0, sb.length() - 1));
 
 		messageContext.setLanguageId("en_US");
 		messageContext.setLocation(randomLocation(random));
