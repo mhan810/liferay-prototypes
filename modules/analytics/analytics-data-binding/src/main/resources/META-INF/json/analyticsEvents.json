@@ -1,47 +1,371 @@
-{
-	"applicationId": "OnlineBanking",
-	"channel": "mobile",
-	"context": {
-		"companyId": 20202,
-		"deviceId": "android-nhpatt2",
-		"deviceType": "android",
-		"languageId": "en_US",
-		"location": {
-			"latitude": 41.12,
-			"longitude": -71.34
-		},
-		"sessionId": "asdfasdfsdfsd",
-		"signedIn": true,
-		"userId": 20250
-	},
-	"events": [
-		{
-			"additionalInfo": {
-				"time": 2
-			},
-			"event": "view",
-			"groupId": 20233,
-			"properties": {
-				"elementId": "button 1",
-				"referrers": []
-			},
-			"timestamp": "2016-04-15T21:10:24.956+01"
-		},
-		{
-			"additionalInfo": {
-				"time": 1000
-			},
-			"event": "form-submitted",
-			"groupId": 20233,
-			"properties": {
-				"entityId": "31810",
-				"entityType": "com.liferay.dynamic.data.list.model.DDLRecord",
-				"referrers": []
-			},
-			"timestamp": "2016-04-15T21:10:25.004Z"
-		}
-	],
-	"messageFormat": "FORMS"
-}
-//form-enter, form-submit, form-leave, form-cancel, form-field-enter,
-//form-field-leave, form-field-exhaust
+[
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "context":{
+         "companyId":20202,
+         "deviceId":"android-nhpatt2",
+         "deviceType":"android",
+         "languageId":"en_US",
+         "location":{
+            "latitude":41.12,
+            "longitude":-71.34
+         },
+         "sessionId":"asdfasdfsdfsd",
+         "signedIn":true,
+         "userId":20250
+      },
+      "events":[
+         {
+            "additionalInfo":{
+               "time":2
+            },
+            "event":"view",
+            "groupId":20233,
+            "properties":{
+               "elementId":"button 1",
+               "referrers":[
+
+               ]
+            },
+            "timestamp":"2016-04-15T21:10:24.956+01"
+         },
+         {
+            "additionalInfo":{
+               "time":1000
+            },
+            "event":"form-submitted",
+            "groupId":20233,
+            "properties":{
+               "entityId":"31810",
+               "entityType":"com.liferay.dynamic.data.list.model.DDLRecord",
+               "referrers":[
+
+               ]
+            },
+            "timestamp":"2016-04-15T21:10:25.004Z"
+         }
+      ],
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":5091
+            },
+            "event":"form-field-exhaust",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":34502,
+                  "name":"TextField"
+               }
+            ],
+            "timestamp":"2017-03-31T22:52:33.449+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":9897
+            },
+            "event":"form-field-leave",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":34502,
+                  "name":"TextField"
+               }
+            ],
+            "timestamp":"2017-03-31T22:52:38.256+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":5098
+            },
+            "event":"form-field-exhaust",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":34502,
+                  "name":"TelephoneNumber"
+               }
+            ],
+            "timestamp":"2017-03-31T22:52:43.354+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":5017
+            },
+            "event":"form-field-enter",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":34502,
+                  "name":"Nationality"
+               }
+            ],
+            "timestamp":"2017-03-31T22:52:52.351+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":0
+            },
+            "event":"app_start",
+            "groupId":20140,
+            "properties":[
+               {
+                  "elementId":"app",
+                  "name":"Opening app",
+                  "referrers":[
+
+                  ]
+               }
+            ],
+            "timestamp":"2017-03-31T23:00:33.557+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":false,
+         "userName":"-"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":0
+            },
+            "event":"form-enter",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":34502,
+                  "name":""
+               }
+            ],
+            "timestamp":"2017-03-31T23:16:32.014+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":-12837
+            },
+            "event":"form-leave",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":30114,
+                  "entityType":"com.liferay.dynamic.data.mapping.model.DDMStructure",
+                  "name":"New Form"
+               }
+            ],
+            "timestamp":"2017-03-31T23:33:37.224+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":-13147
+            },
+            "event":"form-leave",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":30114,
+                  "entityType":"com.liferay.dynamic.data.mapping.model.DDMStructure",
+                  "name":"New Form"
+               }
+            ],
+            "timestamp":"2017-03-31T23:33:37.534+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   },
+   {
+      "applicationId":"OnlineBanking",
+      "channel":"mobile",
+      "events":[
+         {
+            "additionalInfo":{
+               "time":-25025
+            },
+            "event":"form-submit",
+            "groupId":20140,
+            "properties":[
+               {
+                  "entityId":30114,
+                  "entityType":"com.liferay.dynamic.data.mapping.model.DDMStructure",
+                  "name":"New Form"
+               }
+            ],
+            "timestamp":"2017-03-31T23:34:45.969+1100"
+         }
+      ],
+      "messageContext":{
+         "companyId":20113,
+         "deviceId":"ef642b52ef0aaa06",
+         "deviceType":"Google Nexus 5 - 5.1.0 - API 22 - 1080x1920",
+         "ipAddress":"10.0.3.15",
+         "locale":"en_US",
+         "location":{
+            "latitude":38.2751,
+            "longitude":-107.051
+         },
+         "signedIn":true,
+         "userId":20153,
+         "userName":"Test Test"
+      },
+      "messageFormat":"FORMS"
+   }
+]
