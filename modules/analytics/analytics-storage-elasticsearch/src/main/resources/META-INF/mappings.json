@@ -1,49 +1,83 @@
 {
 	"dynamic_templates": [
 		{
-			"template_long_sortable": {
-				"mapping": {
-					"index": "not_analyzed",
-					"store": "true",
-					"type": "long"
-				},
-				"match": "*_sortable",
-				"match_mapping_type": "long"
-			}
-		},
-		{
 			"template_string_sortable": {
 				"mapping": {
 					"index": "not_analyzed",
 					"store": "true",
-					"type": "string"
+					"type": "keyword"
 				},
 				"match": "*_sortable",
-				"match_mapping_type": "string"
-			}
-		},
-		{
-			"template_geolocation": {
-				"mapping": {
-					"type": "geo_point"
-				},
-				"match": "*_geolocation"
+				"match_mapping_type": "keyword"
 			}
 		}
 	],
 	"properties": {
-		"context": {
+		"applicationId": {
+			"type": "keyword"
+		},
+		"event": {
+			"type": "keyword"
+		},
+		"groupId": {
+			"type": "long"
+		},
+		"messageContext": {
 			"properties": {
+				"companyId": {
+					"type": "long"
+				},
+				"deviceId": {
+					"type": "keyword"
+				},
+				"deviceType": {
+					"type": "text"
+				},
+				"ipAddress": {
+					"type": "ip"
+				},
+				"languageId": {
+					"type": "keyword"
+				},
 				"location": {
 					"type": "geo_point"
+				},
+				"sessionId": {
+					"type": "keyword"
+				},
+				"userId": {
+					"type": "long"
+				},
+				"userName": {
+					"type": "keyword"
 				}
 			}
 		},
-		"userId": {
-			"index": "not_analyzed",
-			"store": "yes",
-			"type": "string"
+		"mesageFormat": {
+			"type": "keyword"
+		},
+		"properties": {
+			"properties": {
+				"elementId": {
+					"type": "keyword"
+				},
+				"elementName": {
+					"type": "keyword"
+				},
+				"entityId": {
+					"type": "keyword"
+				},
+				"entityName": {
+					"type": "keyword"
+				},
+				"entityType": {
+					"type": "keyword"
+				}
+			}
+		},
+		"timpestamp": {
+			"type": "date",
+			"format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
 		}
-
 	}
 }
