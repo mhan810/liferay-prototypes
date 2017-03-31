@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.prototype.analytics.data.binding.JSONObjectMapper;
-import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
 import com.liferay.prototype.analytics.storage.AnalyticsMessageStorage;
 import com.liferay.prototype.analytics.storage.elasticsearch.internal.configuration.ElasticsearchAnalyticsMessageStorageConfiguration;
 import com.liferay.prototype.analytics.storage.stubs.StoredAnalyticsEvent;
@@ -67,8 +66,8 @@ public class ElasticsearchAnalyticsMessageStorage
 					storedAnalyticsEvents) {
 
 				IndexRequestBuilder indexRequestBuilder =
-					transportClient.prepareIndex(getIndexName(),
-						_ANALYTICS_TYPE);
+					transportClient.prepareIndex(
+						getIndexName(), _ANALYTICS_TYPE);
 
 				indexRequestBuilder.setSource(
 					jsonObjectMapper.convert(storedAnalyticsEvent),
@@ -234,13 +233,13 @@ public class ElasticsearchAnalyticsMessageStorage
 		return indicesExistsResponse.isExists();
 	}
 
-	@Reference
-	protected Props props;
-
 	@Reference(
 		target = "(model=com.liferay.prototype.analytics.storage.stubs.StoredAnalyticsEvent)"
 	)
 	protected JSONObjectMapper<StoredAnalyticsEvent> jsonObjectMapper;
+
+	@Reference
+	protected Props props;
 
 	protected TransportClient transportClient;
 

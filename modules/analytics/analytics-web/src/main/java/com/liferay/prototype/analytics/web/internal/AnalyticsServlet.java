@@ -105,8 +105,8 @@ public class AnalyticsServlet extends HttpServlet {
 			String messageFormat = analyticsEvents.getMessageFormat();
 
 			AnalyticsMessageProcessor<AnalyticsEvents>
-				analyticsMessageProcessor =
-					_analyticsMessageProcessors.get(messageFormat);
+				analyticsMessageProcessor = _analyticsMessageProcessors.get(
+					messageFormat);
 
 			if (analyticsMessageProcessor == null) {
 				if (_log.isWarnEnabled()) {

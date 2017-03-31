@@ -12,6 +12,9 @@ import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.generator.AnalyticsEventsGenerator;
 import com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -274,13 +277,27 @@ public class DefaultAnalyticsEventsGenerator
 	protected Location randomLocation(Random random) {
 		Location location = new Location();
 
-		OptionalDouble lon = random.doubles(1, 30.0, 45.0).findAny();
+		OptionalDouble lat = random.doubles(1, 30.0, 45.0).findAny();
 
-		lon.ifPresent(location::setLongitude);
+		lat.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
 
-		OptionalDouble lat = random.doubles(1, 70, 125.0).findAny();
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
 
-		lat.ifPresent(location::setLatitude);
+				location.setLatitude(bigDecimal.doubleValue());
+			});
+
+		OptionalDouble lon = random.doubles(1, 70, 125.0).findAny();
+
+		lon.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
+
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+				location.setLongitude(bigDecimal.doubleValue());
+			});
 
 		return location;
 	}

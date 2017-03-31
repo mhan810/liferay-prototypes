@@ -32,8 +32,12 @@
 		}
 	],
 	"properties": {
-		"location": {
-			"type": "geo_point"
+		"context": {
+			"properties": {
+				"location": {
+					"type": "geo_point"
+				}
+			}
 		},
 		"userId": {
 			"index": "not_analyzed",
