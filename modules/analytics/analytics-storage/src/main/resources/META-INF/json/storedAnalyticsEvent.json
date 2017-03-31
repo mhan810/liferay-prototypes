@@ -4,10 +4,13 @@
 	},
 	"applicationId": "OnlineBanking",
 	"channel": "mobile",
-	"context": {
+	"event": "view",
+	"groupId": 20233,
+	"messageContext": {
 		"companyId": 20202,
 		"deviceId": "android-nhpatt2",
 		"deviceType": "android",
+		"ipAddress": "10.0.3.15",
 		"languageId": "en_US",
 		"location": {
 			"lat": 41.12,
@@ -15,13 +18,15 @@
 		},
 		"sessionId": "sdfafsdfsdf",
 		"signedIn": true,
-		"userId": 20250
+		"userId": 20250,
+		"userName": "Test Test"
 	},
-	"event": "view",
-	"groupId": 20233,
 	"messageFormat": "FORMS",
 	"properties": {
 		"elementId": "button 1",
+		"elementName": "someField",
+		"entityId": "31810",
+		"entityName": "New Form",
 		"entityType": "com.liferay.dynamic.data.list.model.DDLRecord",
 		"referrers": []
 	},

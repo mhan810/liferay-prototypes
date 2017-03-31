@@ -1,19 +1,6 @@
 {
 	"applicationId": "OnlineBanking",
 	"channel": "mobile",
-	"context": {
-		"companyId": 20202,
-		"deviceId": "android-nhpatt2",
-		"deviceType": "android",
-		"languageId": "en_US",
-		"location": {
-			"latitude": 41.12,
-			"longitude": -71.34
-		},
-		"sessionId": "asdfasdfsdfsd",
-		"signedIn": true,
-		"userId": 20250
-	},
 	"events": [
 		{
 			"additionalInfo": {
@@ -23,6 +10,7 @@
 			"groupId": 20233,
 			"properties": {
 				"elementId": "button 1",
+				"elementName": "someField",
 				"referrers": []
 			},
 			"timestamp": "2016-04-15T21:10:24.956+01"
@@ -35,13 +23,27 @@
 			"groupId": 20233,
 			"properties": {
 				"entityId": "31810",
+				"entityName": "New Form",
 				"entityType": "com.liferay.dynamic.data.list.model.DDLRecord",
 				"referrers": []
 			},
-			"timestamp": "2016-04-15T21:10:25.004Z"
+			"timestamp": "2016-04-15T21:10:24.956+01"
 		}
 	],
+	"messageContext": {
+		"companyId": 20202,
+		"deviceId": "android-nhpatt2",
+		"deviceType": "axndroid",
+		"ipAddress": "10.0.3.15",
+		"languageId": "en_US",
+		"location": {
+			"latitude": 41.12,
+			"longitude": -71.34
+		},
+		"sessionId": "asdfasdfsdfsd",
+		"signedIn": true,
+		"userId": 20250,
+		"userName": "Test Test"
+	},
 	"messageFormat": "FORMS"
 }
-//form-enter, form-submit, form-leave, form-cancel, form-field-enter,
-//form-field-leave, form-field-exhaust
