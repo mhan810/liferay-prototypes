@@ -309,7 +309,7 @@ public class DefaultAnalyticsEventsGenerator
 
 				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
 
-				location.setLongitude(bigDecimal.doubleValue());
+				location.setLongitude(bigDecimal.negate().doubleValue());
 			});
 
 		return location;
