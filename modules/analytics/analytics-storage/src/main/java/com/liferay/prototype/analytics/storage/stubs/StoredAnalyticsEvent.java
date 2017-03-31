@@ -18,9 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "additionalInfo",
     "applicationId",
     "channel",
-    "context",
     "event",
     "groupId",
+    "messageContext",
     "messageFormat",
     "properties",
     "timestamp"
@@ -33,12 +33,12 @@ public class StoredAnalyticsEvent {
     private String applicationId;
     @JsonProperty("channel")
     private String channel;
-    @JsonProperty("context")
-    private Context context;
     @JsonProperty("event")
     private String event;
     @JsonProperty("groupId")
     private Integer groupId;
+    @JsonProperty("messageContext")
+    private MessageContext messageContext;
     @JsonProperty("messageFormat")
     private String messageFormat;
     @JsonProperty("properties")
@@ -111,26 +111,6 @@ public class StoredAnalyticsEvent {
     /**
      * 
      * @return
-     *     The context
-     */
-    @JsonProperty("context")
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * 
-     * @param context
-     *     The context
-     */
-    @JsonProperty("context")
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    /**
-     * 
-     * @return
      *     The event
      */
     @JsonProperty("event")
@@ -166,6 +146,26 @@ public class StoredAnalyticsEvent {
     @JsonProperty("groupId")
     public void setGroupId(Integer groupId) {
         this.groupId = groupId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The messageContext
+     */
+    @JsonProperty("messageContext")
+    public MessageContext getMessageContext() {
+        return messageContext;
+    }
+
+    /**
+     * 
+     * @param messageContext
+     *     The messageContext
+     */
+    @JsonProperty("messageContext")
+    public void setMessageContext(MessageContext messageContext) {
+        this.messageContext = messageContext;
     }
 
     /**
@@ -245,7 +245,7 @@ public class StoredAnalyticsEvent {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(additionalInfo).append(applicationId).append(channel).append(context).append(event).append(groupId).append(messageFormat).append(properties).append(timestamp).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(additionalInfo).append(applicationId).append(channel).append(event).append(groupId).append(messageContext).append(messageFormat).append(properties).append(timestamp).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -257,7 +257,7 @@ public class StoredAnalyticsEvent {
             return false;
         }
         StoredAnalyticsEvent rhs = ((StoredAnalyticsEvent) other);
-        return new EqualsBuilder().append(additionalInfo, rhs.additionalInfo).append(applicationId, rhs.applicationId).append(channel, rhs.channel).append(context, rhs.context).append(event, rhs.event).append(groupId, rhs.groupId).append(messageFormat, rhs.messageFormat).append(properties, rhs.properties).append(timestamp, rhs.timestamp).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(additionalInfo, rhs.additionalInfo).append(applicationId, rhs.applicationId).append(channel, rhs.channel).append(event, rhs.event).append(groupId, rhs.groupId).append(messageContext, rhs.messageContext).append(messageFormat, rhs.messageFormat).append(properties, rhs.properties).append(timestamp, rhs.timestamp).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

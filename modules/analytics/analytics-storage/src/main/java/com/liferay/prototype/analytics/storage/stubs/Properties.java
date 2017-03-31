@@ -18,6 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "elementId",
+    "elementName",
+    "entityId",
+    "entityName",
     "entityType",
     "referrers"
 })
@@ -25,6 +28,12 @@ public class Properties {
 
     @JsonProperty("elementId")
     private String elementId;
+    @JsonProperty("elementName")
+    private String elementName;
+    @JsonProperty("entityId")
+    private String entityId;
+    @JsonProperty("entityName")
+    private String entityName;
     @JsonProperty("entityType")
     private String entityType;
     @JsonProperty("referrers")
@@ -50,6 +59,66 @@ public class Properties {
     @JsonProperty("elementId")
     public void setElementId(String elementId) {
         this.elementId = elementId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The elementName
+     */
+    @JsonProperty("elementName")
+    public String getElementName() {
+        return elementName;
+    }
+
+    /**
+     * 
+     * @param elementName
+     *     The elementName
+     */
+    @JsonProperty("elementName")
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
+    }
+
+    /**
+     * 
+     * @return
+     *     The entityId
+     */
+    @JsonProperty("entityId")
+    public String getEntityId() {
+        return entityId;
+    }
+
+    /**
+     * 
+     * @param entityId
+     *     The entityId
+     */
+    @JsonProperty("entityId")
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The entityName
+     */
+    @JsonProperty("entityName")
+    public String getEntityName() {
+        return entityName;
+    }
+
+    /**
+     * 
+     * @param entityName
+     *     The entityName
+     */
+    @JsonProperty("entityName")
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
     /**
@@ -109,7 +178,7 @@ public class Properties {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(elementId).append(entityType).append(referrers).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(elementId).append(elementName).append(entityId).append(entityName).append(entityType).append(referrers).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -121,7 +190,7 @@ public class Properties {
             return false;
         }
         Properties rhs = ((Properties) other);
-        return new EqualsBuilder().append(elementId, rhs.elementId).append(entityType, rhs.entityType).append(referrers, rhs.referrers).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(elementId, rhs.elementId).append(elementName, rhs.elementName).append(entityId, rhs.entityId).append(entityName, rhs.entityName).append(entityType, rhs.entityType).append(referrers, rhs.referrers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

@@ -19,8 +19,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonPropertyOrder({
     "applicationId",
     "channel",
-    "context",
     "events",
+    "messageContext",
     "messageFormat"
 })
 public class AnalyticsEvents {
@@ -29,10 +29,10 @@ public class AnalyticsEvents {
     private String applicationId;
     @JsonProperty("channel")
     private String channel;
-    @JsonProperty("context")
-    private Context context;
     @JsonProperty("events")
     private List<Event> events = new ArrayList<Event>();
+    @JsonProperty("messageContext")
+    private MessageContext messageContext;
     @JsonProperty("messageFormat")
     private String messageFormat;
     @JsonIgnore
@@ -81,26 +81,6 @@ public class AnalyticsEvents {
     /**
      * 
      * @return
-     *     The context
-     */
-    @JsonProperty("context")
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * 
-     * @param context
-     *     The context
-     */
-    @JsonProperty("context")
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    /**
-     * 
-     * @return
      *     The events
      */
     @JsonProperty("events")
@@ -116,6 +96,26 @@ public class AnalyticsEvents {
     @JsonProperty("events")
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    /**
+     * 
+     * @return
+     *     The messageContext
+     */
+    @JsonProperty("messageContext")
+    public MessageContext getMessageContext() {
+        return messageContext;
+    }
+
+    /**
+     * 
+     * @param messageContext
+     *     The messageContext
+     */
+    @JsonProperty("messageContext")
+    public void setMessageContext(MessageContext messageContext) {
+        this.messageContext = messageContext;
     }
 
     /**
@@ -155,7 +155,7 @@ public class AnalyticsEvents {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(applicationId).append(channel).append(context).append(events).append(messageFormat).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(applicationId).append(channel).append(events).append(messageContext).append(messageFormat).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class AnalyticsEvents {
             return false;
         }
         AnalyticsEvents rhs = ((AnalyticsEvents) other);
-        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(channel, rhs.channel).append(context, rhs.context).append(events, rhs.events).append(messageFormat, rhs.messageFormat).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(applicationId, rhs.applicationId).append(channel, rhs.channel).append(events, rhs.events).append(messageContext, rhs.messageContext).append(messageFormat, rhs.messageFormat).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

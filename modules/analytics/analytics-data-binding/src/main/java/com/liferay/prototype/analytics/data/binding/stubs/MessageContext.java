@@ -18,13 +18,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "companyId",
     "deviceId",
     "deviceType",
+    "ipAddress",
     "languageId",
     "location",
     "sessionId",
     "signedIn",
-    "userId"
+    "userId",
+    "userName"
 })
-public class Context {
+public class MessageContext {
 
     @JsonProperty("companyId")
     private Integer companyId;
@@ -32,6 +34,8 @@ public class Context {
     private String deviceId;
     @JsonProperty("deviceType")
     private String deviceType;
+    @JsonProperty("ipAddress")
+    private String ipAddress;
     @JsonProperty("languageId")
     private String languageId;
     @JsonProperty("location")
@@ -42,6 +46,8 @@ public class Context {
     private Boolean signedIn;
     @JsonProperty("userId")
     private Integer userId;
+    @JsonProperty("userName")
+    private String userName;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -103,6 +109,26 @@ public class Context {
     @JsonProperty("deviceType")
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
+    }
+
+    /**
+     * 
+     * @return
+     *     The ipAddress
+     */
+    @JsonProperty("ipAddress")
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    /**
+     * 
+     * @param ipAddress
+     *     The ipAddress
+     */
+    @JsonProperty("ipAddress")
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     /**
@@ -205,6 +231,26 @@ public class Context {
         this.userId = userId;
     }
 
+    /**
+     * 
+     * @return
+     *     The userName
+     */
+    @JsonProperty("userName")
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * 
+     * @param userName
+     *     The userName
+     */
+    @JsonProperty("userName")
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -222,7 +268,7 @@ public class Context {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(companyId).append(deviceId).append(deviceType).append(languageId).append(location).append(sessionId).append(signedIn).append(userId).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(companyId).append(deviceId).append(deviceType).append(ipAddress).append(languageId).append(location).append(sessionId).append(signedIn).append(userId).append(userName).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -230,11 +276,11 @@ public class Context {
         if (other == this) {
             return true;
         }
-        if ((other instanceof Context) == false) {
+        if ((other instanceof MessageContext) == false) {
             return false;
         }
-        Context rhs = ((Context) other);
-        return new EqualsBuilder().append(companyId, rhs.companyId).append(deviceId, rhs.deviceId).append(deviceType, rhs.deviceType).append(languageId, rhs.languageId).append(location, rhs.location).append(sessionId, rhs.sessionId).append(signedIn, rhs.signedIn).append(userId, rhs.userId).append(additionalProperties, rhs.additionalProperties).isEquals();
+        MessageContext rhs = ((MessageContext) other);
+        return new EqualsBuilder().append(companyId, rhs.companyId).append(deviceId, rhs.deviceId).append(deviceType, rhs.deviceType).append(ipAddress, rhs.ipAddress).append(languageId, rhs.languageId).append(location, rhs.location).append(sessionId, rhs.sessionId).append(signedIn, rhs.signedIn).append(userId, rhs.userId).append(userName, rhs.userName).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }
