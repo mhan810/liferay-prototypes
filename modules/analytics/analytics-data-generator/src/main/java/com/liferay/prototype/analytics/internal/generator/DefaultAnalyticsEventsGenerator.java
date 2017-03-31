@@ -1,13 +1,14 @@
 package com.liferay.prototype.analytics.internal.generator;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.uuid.PortalUUID;
 import com.liferay.prototype.analytics.data.binding.stubs.AdditionalInfo;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
-import com.liferay.prototype.analytics.data.binding.stubs.Context;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Location;
+import com.liferay.prototype.analytics.data.binding.stubs.MessageContext;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.generator.AnalyticsEventsGenerator;
 import com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration;
@@ -58,7 +59,7 @@ public class DefaultAnalyticsEventsGenerator
 		analyticsEvents.setChannel(
 			_analyticsEventsGeneratorConfiguration.channel());
 
-		analyticsEvents.setContext(createContext(random));
+		analyticsEvents.setMessageContext(createMessageContext(random));
 
 		List<Event> events = createEvents(random);
 
@@ -151,20 +152,32 @@ public class DefaultAnalyticsEventsGenerator
 		return timestamp;
 	}
 
-	protected Context createContext(Random random) {
-		Context context = new Context();
+	protected MessageContext createMessageContext(Random random) {
+		MessageContext messageContext = new MessageContext();
 
-		context.setCompanyId(
+		messageContext.setCompanyId(
 			_analyticsEventsGeneratorConfiguration.companyId());
-		context.setDeviceId(StringUtil.randomId());
-		context.setDeviceType(randomDeviceType(random));
-		context.setLanguageId("en_US");
-		context.setLocation(randomLocation(random));
-		context.setSignedIn(true);
-		context.setSessionId(portalUUID.generate());
-		context.setUserId(randomUserId(random));
+		messageContext.setDeviceId(StringUtil.randomId());
+		messageContext.setDeviceType(randomDeviceType(random));
 
-		return context;
+		StringBundler sb = new StringBundler();
+
+		random.ints(4, 1, 200).forEach(value -> {
+			sb.append(value);
+			sb.append(value);
+		});
+
+		sb.stringAt(sb.length() - 1);
+
+		messageContext.setIpAddress(sb.toString());
+
+		messageContext.setLanguageId("en_US");
+		messageContext.setLocation(randomLocation(random));
+		messageContext.setSignedIn(true);
+		messageContext.setSessionId(portalUUID.generate());
+		messageContext.setUserId(randomUserId(random));
+
+		return messageContext;
 	}
 
 	protected Event createEvent(

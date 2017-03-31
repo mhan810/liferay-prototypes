@@ -5,7 +5,7 @@ import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.storage.StoredAnalyticsEventFactory;
 import com.liferay.prototype.analytics.storage.stubs.AdditionalInfo;
-import com.liferay.prototype.analytics.storage.stubs.Context;
+import com.liferay.prototype.analytics.storage.stubs.MessageContext;
 import com.liferay.prototype.analytics.storage.stubs.Location;
 import com.liferay.prototype.analytics.storage.stubs.Properties;
 import com.liferay.prototype.analytics.storage.stubs.StoredAnalyticsEvent;
@@ -52,8 +52,8 @@ public class DefaultStoredAnalyticsEventFactory
 
 			storedAnalyticsEvent.setChannel(analyticsEvents.getChannel());
 
-			storedAnalyticsEvent.setContext(
-				convert(analyticsEvents.getContext()));
+			storedAnalyticsEvent.setMessageContext(
+				convert(analyticsEvents.getMessageContext()));
 
 			storedAnalyticsEvent.setEvent(event.getEvent());
 			storedAnalyticsEvent.setGroupId(event.getGroupId());
@@ -88,30 +88,34 @@ public class DefaultStoredAnalyticsEventFactory
 		return storageAdditionalInfo;
 	}
 
-	protected Context convert(
-		com.liferay.prototype.analytics.data.binding.stubs.Context context) {
+	protected MessageContext convert(
+		com.liferay.prototype.analytics.data.binding.stubs.MessageContext
+			messageContext) {
 
-		if (context == null) {
+		if (messageContext == null) {
 			return null;
 		}
 
-		Context storedContext = new Context();
+		MessageContext storedMessageContext = new MessageContext();
 
-		storedContext.setCompanyId(context.getCompanyId());
-		storedContext.setDeviceId(context.getDeviceId());
-		storedContext.setLanguageId(context.getLanguageId());
-		storedContext.setSignedIn(context.getSignedIn());
-		storedContext.setSessionId(context.getSessionId());
-		storedContext.setUserId(context.getUserId());
+		storedMessageContext.setCompanyId(messageContext.getCompanyId());
+		storedMessageContext.setDeviceId(messageContext.getDeviceId());
+		storedMessageContext.setIpAddress(messageContext.getIpAddress());
+		storedMessageContext.setLanguageId(messageContext.getLanguageId());
+		storedMessageContext.setSignedIn(messageContext.getSignedIn());
+		storedMessageContext.setSessionId(messageContext.getSessionId());
+		storedMessageContext.setUserId(messageContext.getUserId());
+		storedMessageContext.setUserName(messageContext.getUserName());
 
-		storedContext.setLocation(convert(context.getLocation()));
+		storedMessageContext.setLocation(convert(messageContext.getLocation()));
 
 		Map<String, Object> additionalProperties =
-			context.getAdditionalProperties();
+			messageContext.getAdditionalProperties();
 
-		additionalProperties.forEach(storedContext::setAdditionalProperty);
+		additionalProperties.forEach(
+			storedMessageContext::setAdditionalProperty);
 
-		return storedContext;
+		return storedMessageContext;
 	}
 
 	protected Location convert(
@@ -145,6 +149,9 @@ public class DefaultStoredAnalyticsEventFactory
 		Properties storedProperties = new Properties();
 
 		storedProperties.setElementId(properties.getElementId());
+		storedProperties.setElementName(properties.getElementName());
+		storedProperties.setEntityId(properties.getEntityId());
+		storedProperties.setEntityName(properties.getEntityName());
 		storedProperties.setEntityType(properties.getEntityType());
 		storedProperties.setReferrers(properties.getReferrers());
 
