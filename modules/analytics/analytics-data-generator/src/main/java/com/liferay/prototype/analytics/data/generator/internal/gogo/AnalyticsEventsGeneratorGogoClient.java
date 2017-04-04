@@ -1,4 +1,4 @@
-package com.liferay.prototype.analytics.internal.generator.gogo;
+package com.liferay.prototype.analytics.data.generator.internal.gogo;
 
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;

@@ -1,4 +1,4 @@
-package com.liferay.prototype.analytics.internal.generator.configuration;
+package com.liferay.prototype.analytics.data.generator.internal.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
@@ -9,7 +9,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  */
 @ExtendedObjectClassDefinition(category = "prototype")
 @Meta.OCD(
-	id = "com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration",
+	id = "com.liferay.prototype.analytics.internal.generator.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration",
 	name = "Analytics Events Generator Configuration"
 )
 public interface AnalyticsEventsGeneratorConfiguration {

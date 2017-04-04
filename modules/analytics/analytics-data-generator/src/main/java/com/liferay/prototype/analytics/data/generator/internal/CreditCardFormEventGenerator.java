@@ -1,11 +1,10 @@
-package com.liferay.prototype.analytics.internal.generator.data.generator.internal;
+package com.liferay.prototype.analytics.data.generator.internal;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
-import com.liferay.prototype.analytics.internal.generator.EventBuilder;
-import com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration;
-import com.liferay.prototype.analytics.internal.generator.data.generator.FormEventGenerator;
+import com.liferay.prototype.analytics.data.generator.FormEventGenerator;
+import com.liferay.prototype.analytics.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration;
 
 import java.text.DateFormat;
 
@@ -21,7 +20,7 @@ import org.osgi.service.component.annotations.Modified;
  * @author Michael C. Han
  */
 @Component(
-	configurationPid = "com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration",
+	configurationPid = "com.liferay.prototype.analytics.internal.generator.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration",
 	immediate = true, service = FormEventGenerator.class
 )
 public class CreditCardFormEventGenerator implements FormEventGenerator {

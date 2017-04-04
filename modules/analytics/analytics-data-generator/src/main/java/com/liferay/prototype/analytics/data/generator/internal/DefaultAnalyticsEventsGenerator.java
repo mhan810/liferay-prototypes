@@ -1,4 +1,4 @@
-package com.liferay.prototype.analytics.internal.generator;
+package com.liferay.prototype.analytics.data.generator.internal;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.CharPool;
@@ -11,9 +11,9 @@ import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Location;
 import com.liferay.prototype.analytics.data.binding.stubs.MessageContext;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
+import com.liferay.prototype.analytics.data.generator.FormEventGenerator;
+import com.liferay.prototype.analytics.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration;
 import com.liferay.prototype.analytics.generator.AnalyticsEventsGenerator;
-import com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration;
-import com.liferay.prototype.analytics.internal.generator.data.generator.FormEventGenerator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * @author Michael C. Han
  */
 @Component(
-	configurationPid = "com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration",
+	configurationPid = "com.liferay.prototype.analytics.internal.generator.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration",
 	immediate = true,
 	property = {
 		"model=com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents"
