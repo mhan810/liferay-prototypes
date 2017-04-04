@@ -1,9 +1,10 @@
-package com.liferay.prototype.analytics.data.generator.internal;
+package com.liferay.prototype.analytics.data.generator.internal.form;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
-import com.liferay.prototype.analytics.data.generator.FormEventGenerator;
+import com.liferay.prototype.analytics.data.generator.form.FormEventGenerator;
+import com.liferay.prototype.analytics.data.generator.internal.EventBuilder;
 import com.liferay.prototype.analytics.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration;
 
 import java.text.DateFormat;

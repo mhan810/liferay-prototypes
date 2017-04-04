@@ -1,4 +1,4 @@
-package com.liferay.prototype.analytics.data.generator;
+package com.liferay.prototype.analytics.data.generator.form;
 
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 
