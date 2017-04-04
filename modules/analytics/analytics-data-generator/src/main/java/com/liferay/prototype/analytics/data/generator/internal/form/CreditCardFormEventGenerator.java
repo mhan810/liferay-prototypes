@@ -1,6 +1,7 @@
 package com.liferay.prototype.analytics.data.generator.internal.form;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.prototype.analytics.data.binding.stubs.AdditionalInfo;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.data.generator.form.FormEventGenerator;
@@ -31,45 +32,38 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 
 		timestamp = getNextTimestamp(random, timestamp);
 
+		int entityId = random.nextInt(50000);
+
 		Event formEnter = createFormEvent(
-			random, format, "form-enter", timestamp, getFormName());
+			format, "form-enter", timestamp, entityId);
 
 		events.add(formEnter);
 
 		float percentage = random.nextFloat();
 
-		boolean submitForm = false;
+		boolean completForm = false;
 
 		if (percentage > 0.7) {
-			submitForm = true;
+			completForm = true;
 		}
 
-		int numFields = 20;
+		timestamp = createFormFieldEvents(
+			random, events, format, timestamp, completForm, entityId);
 
-		if (submitForm) {
-			timestamp = createFormFieldEvents(
-				random, events, format, timestamp, numFields);
+		timestamp = getNextTimestamp(random, timestamp);
 
-			timestamp = getNextTimestamp(random, timestamp);
+		Event formExit = null;
 
-			Event formExit = createFormEvent(
-				random, format, "form-submit", timestamp, getFormName());
-
-			events.add(formExit);
+		if (completForm) {
+			formExit  = createFormEvent(
+				format, "form-submit", timestamp, entityId);
 		}
 		else {
-			numFields = Math.round(numFields * random.nextFloat());
-
-			timestamp = createFormFieldEvents(
-				random, events, format, timestamp, numFields);
-
-			timestamp = getNextTimestamp(random, timestamp);
-
-			Event formExit = createFormEvent(
-				random, format, "form-cancel", timestamp, getFormName());
-
-			events.add(formExit);
+			formExit = createFormEvent(
+				format, "form-cancel", timestamp, entityId);
 		}
+
+		events.add(formExit);
 
 		return timestamp;
 	}
@@ -87,22 +81,21 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 				AnalyticsEventsGeneratorConfiguration.class, properties);
 	}
 
-	protected EventBuilder createEventBuilder(
-		DateFormat dateformat, String eventType, long timestamp) {
+	protected Event createFormEvent(
+		DateFormat dateFormat, String eventType, long timestamp, int entityId) {
 
-		EventBuilder eventBuilder = new EventBuilder(
-			_analyticsEventsGeneratorConfiguration, dateformat);
+		EventBuilder eventBuilder = createFormEventBuilder(
+			dateFormat, eventType, timestamp, entityId);
 
-		eventBuilder.setEventType(eventType);
+		Properties properties = eventBuilder.getProperties();
 
-		eventBuilder.setTimestamp(timestamp);
+		properties.setElementName(getFormName());
 
-		return eventBuilder;
+		return eventBuilder.getEvent();
 	}
 
-	protected Event createFormEvent(
-		Random random, DateFormat dateFormat, String eventType, long timestamp,
-		String formName) {
+	protected EventBuilder createFormEventBuilder(
+		DateFormat dateFormat, String eventType, long timestamp, int entityId) {
 
 		EventBuilder eventBuilder = new EventBuilder(
 			_analyticsEventsGeneratorConfiguration, dateFormat);
@@ -112,46 +105,130 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 
 		Properties properties = eventBuilder.getProperties();
 
-		properties.setElementName(formName);
-		properties.setEntityName(formName);
-		properties.setEntityId(random.nextInt(50000));
+		properties.setEntityName(getFormName());
+		properties.setEntityId(entityId);
 
-		return eventBuilder.getEvent();
-	}
-
-	protected Event createFormEvent(
-		Random random, DateFormat format, String eventType, long timestamp,
-		String formFieldId, String formName) {
-
-		EventBuilder eventBuilder = createEventBuilder(
-			format, eventType, timestamp);
-
-		Properties properties = eventBuilder.getProperties();
-
-		properties.setElementId(formFieldId);
-
-		return eventBuilder.getEvent();
+		return eventBuilder;
 	}
 
 	protected long createFormFieldEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp,
-		int numFields) {
+		Random random, List<Event> events, DateFormat dateFormat,
+		long timestamp, boolean completeForm, int entityId) {
 
-		for (int i = 0; i < numFields; i++) {
-			timestamp = getNextTimestamp(random, timestamp);
+		int duration = random.nextInt(5000);
 
-			String fieldName = "field" + i;
+		timestamp = addFormFieldEventsPair(
+			"FirstName", "First Name", entityId, events, random, dateFormat,
+			timestamp, duration);
 
-			Event formFieldEnter = createFormEvent(
-				random, format, "form-field-enter", timestamp, fieldName);
+		timestamp = addFormFieldEventsPair(
+			"MI", "M.I.", entityId, events, random, dateFormat,
+			timestamp, duration);
 
-			events.add(formFieldEnter);
+		timestamp = addFormFieldEventsPair(
+			"LastName", "LastName", entityId, events, random, dateFormat,
+			timestamp, duration);
 
-			Event formFieldExit = createFormEvent(
-				random, format, "form-field-exit", timestamp, fieldName);
+		timestamp = addFormFieldEventsPair(
+			"StreetAddress", "Street Address", entityId, events, random,
+			dateFormat, timestamp, duration);
 
-			events.add(formFieldExit);
+		timestamp = addFormFieldEventsPair(
+			"StreetAddress2", "Street Address 2", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"City", "City", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"State", "State", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"PostalCode", "PostalCode", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		float percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .9)) {
+			return timestamp;
 		}
+
+		timestamp = addFormFieldEventsPair(
+			"AccountsYouOwn", "Accounts You Own", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"TypesOfResidence", "Types of Residence", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"MonthlyPayment", "Monthly Payment", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"GrossAnnualIncome", "Gross Annual Income", entityId, events,
+			random, dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"SourceOfIncome", "Source of Income", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"Employer", "Employer", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		if (!completeForm && (percentage > .6)) {
+			return timestamp;
+		}
+
+		timestamp = addFormFieldEventsPair(
+			"SocialSecurityNumber", "Social Security Number", entityId, events,
+			random, dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"MothersMaidenName", "Mother's Maiden Name", entityId, events,
+			random, dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"DateOfBirth", "Date of Birth", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		return timestamp;
+	}
+
+	protected long addFormFieldEventsPair(
+		String fieldId, String fieldName, int entityId, List<Event> events,
+		Random random, DateFormat dateFormat, long timestamp, int duration) {
+
+		timestamp = getNextTimestamp(random, timestamp);
+
+		EventBuilder formFieldEnterEventBuilder = createFormEventBuilder(
+			dateFormat, "form-field-enter", timestamp, entityId);
+
+		Properties fieldEnterProperties =
+			formFieldEnterEventBuilder.getProperties();
+
+		fieldEnterProperties.setElementId(fieldId);
+		fieldEnterProperties.setElementName(fieldName);
+
+		events.add(formFieldEnterEventBuilder.getEvent());
+
+		timestamp = getNextTimestamp(random, timestamp);
+
+		EventBuilder formFieldExitEventBuilder = createFormEventBuilder(
+			dateFormat, "form-field-exit", timestamp, entityId);
+
+		Properties fieldExitProperties =
+			formFieldExitEventBuilder.getProperties();
+
+		fieldExitProperties.setElementId(fieldId);
+		fieldExitProperties.setElementName(fieldName);
+
+		formFieldExitEventBuilder.setAdditionalInfoTime(duration);
+
+		events.add(formFieldEnterEventBuilder.getEvent());
 
 		return timestamp;
 	}
