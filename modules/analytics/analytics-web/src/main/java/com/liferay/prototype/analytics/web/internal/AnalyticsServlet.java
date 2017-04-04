@@ -2,6 +2,7 @@ package com.liferay.prototype.analytics.web.internal;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StackTraceUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.prototype.analytics.data.binding.JSONObjectMapper;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
@@ -10,6 +11,7 @@ import com.liferay.prototype.analytics.processor.AnalyticsMessageProcessor;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -86,21 +88,10 @@ public class AnalyticsServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
-		StringBundler sb = new StringBundler();
+		try (InputStream inputstream = httpServletRequest.getInputStream()){
 
-		String value = null;
-
-		BufferedReader reader = httpServletRequest.getReader();
-
-		while ((value = reader.readLine()) != null) {
-			sb.append(value);
-		}
-
-		String analyticsMessage = sb.toString();
-
-		try {
 			AnalyticsEvents analyticsEvents = jsonObjectMapper.convert(
-				httpServletRequest.getInputStream());
+					inputstream);
 
 			String messageFormat = analyticsEvents.getMessageFormat();
 
@@ -119,8 +110,11 @@ public class AnalyticsServlet extends HttpServlet {
 			analyticsMessageProcessor.processMessage(analyticsEvents);
 		}
 		catch (Exception e) {
+			httpServletResponse.getWriter().println("Liferay Analytics Prototype");
+			httpServletResponse.getWriter().println(StackTraceUtil.getStackTrace(e));
+
 			if (_log.isWarnEnabled()) {
-				_log.warn("Could not parse: " + analyticsMessage, e);
+				_log.warn("Could not parse: ", e);
 			}
 		}
 	}
