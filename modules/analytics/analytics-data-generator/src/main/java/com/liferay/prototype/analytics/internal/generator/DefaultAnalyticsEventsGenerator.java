@@ -4,6 +4,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUID;
 import com.liferay.prototype.analytics.data.binding.stubs.AdditionalInfo;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
@@ -89,11 +90,13 @@ public class DefaultAnalyticsEventsGenerator
 	}
 
 	protected long addFormEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp) {
+		Random random, List<Event> events, DateFormat format, long timestamp,
+		String formName) {
 
 		timestamp += Math.round(random.nextDouble() * 100000);
 
-		Event formEnter = createEvent(random, format, "form-enter", timestamp);
+		Event formEnter = createFormEvent(
+			random, format, "form-enter", timestamp, formName);
 
 		events.add(formEnter);
 
@@ -101,33 +104,33 @@ public class DefaultAnalyticsEventsGenerator
 
 		boolean submitForm = false;
 
-		if (percentage > 0.3) {
+		if (percentage > 0.5) {
 			submitForm = true;
 		}
 
 		int numFields = 20;
 
 		if (submitForm) {
-			timestamp = generateFormFieldEvents(
+			timestamp = createFormFieldEvents(
 				random, events, format, timestamp, numFields);
 
 			timestamp += Math.round(random.nextDouble() * 100000);
 
-			Event formExit = createEvent(
-				random, format, "form-submit", timestamp);
+			Event formExit = createFormEvent(
+				random, format, "form-submit", timestamp, formName);
 
 			events.add(formExit);
 		}
 		else {
 			numFields = Math.round(numFields * random.nextFloat());
 
-			timestamp = generateFormFieldEvents(
+			timestamp = createFormFieldEvents(
 				random, events, format, timestamp, numFields);
 
 			timestamp += Math.round(random.nextDouble() * 100000);
 
-			Event formExit = createEvent(
-				random, format, "form-cancel", timestamp);
+			Event formExit = createFormEvent(
+				random, format, "form-cancel", timestamp, formName);
 
 			events.add(formExit);
 		}
@@ -135,19 +138,126 @@ public class DefaultAnalyticsEventsGenerator
 		return timestamp;
 	}
 
-	protected long addViewEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp) {
+	protected Event createEvent(
+		Random random, DateFormat format, String eventType, long timestamp) {
 
-		OptionalInt optionalInt = random.ints(1, 5, 20).findAny();
+		Event event = new Event();
 
-		int numEvents = optionalInt.orElse(5);
+		event.setEvent(eventType);
 
-		for (int i = 0; i < numEvents; i++) {
+		event.setGroupId(_analyticsEventsGeneratorConfiguration.groupId());
+
+		Date date = new Date(timestamp);
+
+		event.setTimestamp(format.format(date));
+
+		AdditionalInfo additionalInfo = new AdditionalInfo();
+
+		additionalInfo.setTime(random.nextInt(3000));
+
+		event.setAdditionalInfo(additionalInfo);
+
+		return event;
+	}
+
+	protected List<Event> createEvents(Random random) {
+		List<Event> events = new ArrayList<>();
+
+		long timestampStart = randomTimestampStart(random);
+
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+		long timestamp = timestampStart;
+
+		Event appOpen = createEvent(random, format, "app-open", timestamp);
+
+		events.add(appOpen);
+
+		timestamp = createViewEvents(random, events, format, timestamp);
+
+		float percentage = random.nextFloat();
+
+		String formName = null;
+
+		if (percentage > 0.6) {
+			percentage = random.nextFloat();
+
+			if (percentage < 0.4) {
+				formName = "Savings Account Application";
+			}
+			else if ((percentage >= 0.4) && (percentage < 0.8)) {
+				formName = "Credit Card Application";
+			}
+
+			if (percentage >= 0.8) {
+				formName = "Auto Loan Application";
+			}
+		}
+
+		if (Validator.isNotNull(formName)) {
+			timestamp = addFormEvents(
+				random, events, format, timestamp, formName);
+
+			timestamp = createViewEvents(random, events, format, timestamp);
+		}
+
+		timestamp += Math.round(random.nextDouble() * 10000);
+
+		Event appClose = createEvent(random, format, "app-close", timestamp);
+
+		events.add(appClose);
+
+		return events;
+	}
+
+	protected Event createFormEvent(
+		Random random, DateFormat format, String eventType, long timestamp,
+		String formName) {
+
+		Event event = createEvent(random, format, eventType, timestamp);
+
+		Properties properties = new Properties();
+
+		properties.setElementName(formName);
+
+		event.setProperties(properties);
+
+		return event;
+	}
+
+	protected Event createFormEvent(
+		Random random, DateFormat format, String eventType, long timestamp,
+		String formFieldId, String formName) {
+
+		Event event = createEvent(random, format, eventType, timestamp);
+
+		Properties properties = new Properties();
+
+		properties.setElementId(formFieldId);
+
+		event.setProperties(properties);
+
+		return event;
+	}
+
+	protected long createFormFieldEvents(
+		Random random, List<Event> events, DateFormat format, long timestamp,
+		int numFields) {
+
+		for (int i = 0; i < numFields; i++) {
 			timestamp += Math.round(random.nextDouble() * 100000);
 
-			Event event = createEvent(random, format, "view", timestamp);
+			String fieldName = "field" + i;
 
-			events.add(event);
+			Event formFieldEnter = createFormEvent(
+				random, format, "form-field-enter", timestamp, fieldName);
+
+			events.add(formFieldEnter);
+
+			Event formFieldExit = createFormEvent(
+				random, format, "form-field-exit", timestamp, fieldName);
+
+			events.add(formFieldExit);
 		}
 
 		return timestamp;
@@ -180,99 +290,19 @@ public class DefaultAnalyticsEventsGenerator
 		return messageContext;
 	}
 
-	protected Event createEvent(
-		Random random, DateFormat format, String eventType, long timestamp) {
+	protected long createViewEvents(
+		Random random, List<Event> events, DateFormat format, long timestamp) {
 
-		Event event = new Event();
+		OptionalInt optionalInt = random.ints(1, 5, 20).findAny();
 
-		event.setEvent(eventType);
+		int numEvents = optionalInt.orElse(5);
 
-		event.setGroupId(_analyticsEventsGeneratorConfiguration.groupId());
-
-		Date date = new Date(timestamp);
-
-		event.setTimestamp(format.format(date));
-
-		AdditionalInfo additionalInfo = new AdditionalInfo();
-
-		additionalInfo.setTime(random.nextInt(3000));
-
-		event.setAdditionalInfo(additionalInfo);
-
-		return event;
-	}
-
-	protected Event createEvent(
-		Random random, DateFormat format, String eventType, long timestamp,
-		String formFieldId) {
-
-		Event event = createEvent(random, format, eventType, timestamp);
-
-		Properties properties = new Properties();
-
-		properties.setElementId(formFieldId);
-
-		event.setProperties(properties);
-
-		return event;
-	}
-
-	protected List<Event> createEvents(Random random) {
-		List<Event> events = new ArrayList<>();
-
-		long timestampStart = randomTimestampStart(random);
-
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-		long timestamp = timestampStart;
-
-		Event appOpen = createEvent(random, format, "app-open", timestamp);
-
-		events.add(appOpen);
-
-		timestamp = addViewEvents(random, events, format, timestamp);
-
-		float percentage = random.nextFloat();
-
-		boolean enterForm = false;
-
-		if (percentage > 0.4) {
-			enterForm = true;
-		}
-
-		if (enterForm) {
-			timestamp = addFormEvents(random, events, format, timestamp);
-
-			timestamp = addViewEvents(random, events, format, timestamp);
-		}
-
-		timestamp += Math.round(random.nextDouble() * 10000);
-
-		Event appClose = createEvent(random, format, "app-close", timestamp);
-
-		events.add(appClose);
-
-		return events;
-	}
-
-	protected long generateFormFieldEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp,
-		int numFields) {
-
-		for (int i = 0; i < numFields; i++) {
+		for (int i = 0; i < numEvents; i++) {
 			timestamp += Math.round(random.nextDouble() * 100000);
 
-			String fieldName = "field" + i;
+			Event event = createEvent(random, format, "view", timestamp);
 
-			Event formFieldEnter = createEvent(
-				random, format, "form-field-enter", timestamp, fieldName);
-
-			events.add(formFieldEnter);
-
-			Event formFieldExit = createEvent(
-				random, format, "form-field-exit", timestamp, fieldName);
-
-			events.add(formFieldExit);
+			events.add(event);
 		}
 
 		return timestamp;
