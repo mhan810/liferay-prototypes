@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUID;
-import com.liferay.prototype.analytics.data.binding.stubs.AdditionalInfo;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Location;
@@ -14,6 +13,7 @@ import com.liferay.prototype.analytics.data.binding.stubs.MessageContext;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.generator.AnalyticsEventsGenerator;
 import com.liferay.prototype.analytics.internal.generator.configuration.AnalyticsEventsGeneratorConfiguration;
+import com.liferay.prototype.analytics.internal.generator.data.generator.FormEventGenerator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalDouble;
@@ -34,6 +35,9 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Michael C. Han
@@ -80,84 +84,38 @@ public class DefaultAnalyticsEventsGenerator
 			ConfigurableUtil.createConfigurable(
 				AnalyticsEventsGeneratorConfiguration.class, properties);
 
-		DateFormat format = new SimpleDateFormat(_DATE_FORMAT_STRING);
+		_dateFormat = new SimpleDateFormat(
+			_analyticsEventsGeneratorConfiguration.dateFormat());
 
-		_timestampStart = format.parse(
+		_timestampStart = _dateFormat.parse(
 			_analyticsEventsGeneratorConfiguration.timestampStart());
 
-		_timestampEnd = format.parse(
+		_timestampEnd = _dateFormat.parse(
 			_analyticsEventsGeneratorConfiguration.timestampEnd());
 	}
 
-	protected long addFormEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp,
-		String formName) {
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY,
+		unbind = "removeFormEventGenerator"
+	)
+	protected void addFormEventGenerator(
+		FormEventGenerator formEventGenerator) {
 
-		timestamp += Math.round(random.nextDouble() * 100000);
-
-		Event formEnter = createFormEvent(
-			random, format, "form-enter", timestamp, formName);
-
-		events.add(formEnter);
-
-		float percentage = random.nextFloat();
-
-		boolean submitForm = false;
-
-		if (percentage > 0.5) {
-			submitForm = true;
-		}
-
-		int numFields = 20;
-
-		if (submitForm) {
-			timestamp = createFormFieldEvents(
-				random, events, format, timestamp, numFields);
-
-			timestamp += Math.round(random.nextDouble() * 100000);
-
-			Event formExit = createFormEvent(
-				random, format, "form-submit", timestamp, formName);
-
-			events.add(formExit);
-		}
-		else {
-			numFields = Math.round(numFields * random.nextFloat());
-
-			timestamp = createFormFieldEvents(
-				random, events, format, timestamp, numFields);
-
-			timestamp += Math.round(random.nextDouble() * 100000);
-
-			Event formExit = createFormEvent(
-				random, format, "form-cancel", timestamp, formName);
-
-			events.add(formExit);
-		}
-
-		return timestamp;
+		_formEventGenerators.put(
+			formEventGenerator.getFormName(), formEventGenerator);
 	}
 
-	protected Event createEvent(
-		Random random, DateFormat format, String eventType, long timestamp) {
+	protected Event createEvent(String eventType, long timestamp) {
+		EventBuilder eventBuilder = new EventBuilder(
+			_analyticsEventsGeneratorConfiguration, _dateFormat);
 
-		Event event = new Event();
+		eventBuilder.setEventType(eventType);
 
-		event.setEvent(eventType);
+		eventBuilder.setTimestamp(timestamp);
 
-		event.setGroupId(_analyticsEventsGeneratorConfiguration.groupId());
-
-		Date date = new Date(timestamp);
-
-		event.setTimestamp(format.format(date));
-
-		AdditionalInfo additionalInfo = new AdditionalInfo();
-
-		additionalInfo.setTime(random.nextInt(3000));
-
-		event.setAdditionalInfo(additionalInfo);
-
-		return event;
+		return eventBuilder.getEvent();
 	}
 
 	protected List<Event> createEvents(Random random) {
@@ -165,15 +123,18 @@ public class DefaultAnalyticsEventsGenerator
 
 		long timestampStart = randomTimestampStart(random);
 
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
 		long timestamp = timestampStart;
 
-		Event appOpen = createEvent(random, format, "app-open", timestamp);
+		EventBuilder appStartEventBuilder = new EventBuilder(
+			_analyticsEventsGeneratorConfiguration, _dateFormat);
 
-		events.add(appOpen);
+		appStartEventBuilder.setEventType("app-start");
 
-		timestamp = createViewEvents(random, events, format, timestamp);
+		appStartEventBuilder.setTimestamp(timestamp);
+
+		events.add(appStartEventBuilder.getEvent());
+
+		timestamp = createViewEvents(random, events, timestamp);
 
 		float percentage = random.nextFloat();
 
@@ -195,72 +156,27 @@ public class DefaultAnalyticsEventsGenerator
 		}
 
 		if (Validator.isNotNull(formName)) {
-			timestamp = addFormEvents(
-				random, events, format, timestamp, formName);
+			FormEventGenerator formEventGenerator = _formEventGenerators.get(
+				formName);
 
-			timestamp = createViewEvents(random, events, format, timestamp);
+			timestamp = formEventGenerator.addFormEvents(
+				random, events, _dateFormat, timestamp);
+
+			timestamp = createViewEvents(random, events, timestamp);
 		}
 
 		timestamp += Math.round(random.nextDouble() * 10000);
 
-		Event appClose = createEvent(random, format, "app-close", timestamp);
+		EventBuilder appCloseEvent = new EventBuilder(
+			_analyticsEventsGeneratorConfiguration, _dateFormat);
 
-		events.add(appClose);
+		appCloseEvent.setEventType("app_close");
+
+		appCloseEvent.setTimestamp(timestamp);
+
+		events.add(appCloseEvent.getEvent());
 
 		return events;
-	}
-
-	protected Event createFormEvent(
-		Random random, DateFormat format, String eventType, long timestamp,
-		String formName) {
-
-		Event event = createEvent(random, format, eventType, timestamp);
-
-		Properties properties = new Properties();
-
-		properties.setElementName(formName);
-
-		event.setProperties(properties);
-
-		return event;
-	}
-
-	protected Event createFormEvent(
-		Random random, DateFormat format, String eventType, long timestamp,
-		String formFieldId, String formName) {
-
-		Event event = createEvent(random, format, eventType, timestamp);
-
-		Properties properties = new Properties();
-
-		properties.setElementId(formFieldId);
-
-		event.setProperties(properties);
-
-		return event;
-	}
-
-	protected long createFormFieldEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp,
-		int numFields) {
-
-		for (int i = 0; i < numFields; i++) {
-			timestamp += Math.round(random.nextDouble() * 100000);
-
-			String fieldName = "field" + i;
-
-			Event formFieldEnter = createFormEvent(
-				random, format, "form-field-enter", timestamp, fieldName);
-
-			events.add(formFieldEnter);
-
-			Event formFieldExit = createFormEvent(
-				random, format, "form-field-exit", timestamp, fieldName);
-
-			events.add(formFieldExit);
-		}
-
-		return timestamp;
 	}
 
 	protected MessageContext createMessageContext(Random random) {
@@ -291,7 +207,7 @@ public class DefaultAnalyticsEventsGenerator
 	}
 
 	protected long createViewEvents(
-		Random random, List<Event> events, DateFormat format, long timestamp) {
+		Random random, List<Event> events, long timestamp) {
 
 		OptionalInt optionalInt = random.ints(1, 5, 20).findAny();
 
@@ -300,9 +216,18 @@ public class DefaultAnalyticsEventsGenerator
 		for (int i = 0; i < numEvents; i++) {
 			timestamp += Math.round(random.nextDouble() * 100000);
 
-			Event event = createEvent(random, format, "view", timestamp);
+			EventBuilder viewPageEventBuilder = new EventBuilder(
+				_analyticsEventsGeneratorConfiguration, _dateFormat);
 
-			events.add(event);
+			viewPageEventBuilder.setEventType("view");
+
+			viewPageEventBuilder.setTimestamp(timestamp);
+
+			Properties properties = viewPageEventBuilder.getProperties();
+
+			properties.setElementName("page-" + i);
+
+			events.add(viewPageEventBuilder.getEvent());
 		}
 
 		return timestamp;
@@ -364,6 +289,9 @@ public class DefaultAnalyticsEventsGenerator
 
 	private volatile AnalyticsEventsGeneratorConfiguration
 		_analyticsEventsGeneratorConfiguration;
+	private volatile DateFormat _dateFormat;
+	private Map<String, FormEventGenerator> _formEventGenerators =
+		new HashMap<>();
 	private Date _timestampEnd;
 	private Date _timestampStart;
 
