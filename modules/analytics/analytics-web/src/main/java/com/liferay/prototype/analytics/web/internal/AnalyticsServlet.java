@@ -110,6 +110,8 @@ public class AnalyticsServlet extends HttpServlet {
 			analyticsMessageProcessor.processMessage(analyticsEvents);
 		}
 		catch (Exception e) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+
 			httpServletResponse.getWriter().println("Liferay Analytics Prototype");
 			httpServletResponse.getWriter().println(StackTraceUtil.getStackTrace(e));
 
