@@ -31,7 +31,7 @@ public class Properties {
     @JsonProperty("elementName")
     private String elementName;
     @JsonProperty("entityId")
-    private String entityId;
+    private Integer entityId;
     @JsonProperty("entityName")
     private String entityName;
     @JsonProperty("entityType")
@@ -87,7 +87,7 @@ public class Properties {
      *     The entityId
      */
     @JsonProperty("entityId")
-    public String getEntityId() {
+    public Integer getEntityId() {
         return entityId;
     }
 
@@ -97,7 +97,7 @@ public class Properties {
      *     The entityId
      */
     @JsonProperty("entityId")
-    public void setEntityId(String entityId) {
+    public void setEntityId(Integer entityId) {
         this.entityId = entityId;
     }
 

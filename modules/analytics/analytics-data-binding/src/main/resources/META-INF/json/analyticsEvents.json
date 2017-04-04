@@ -22,7 +22,7 @@
 			"event": "form-submitted",
 			"groupId": 20233,
 			"properties": {
-				"entityId": "31810",
+				"entityId": 31810,
 				"entityName": "New Form",
 				"entityType": "com.liferay.dynamic.data.list.model.DDLRecord",
 				"referrers": []
