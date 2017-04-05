@@ -11,6 +11,8 @@
 			"properties": {
 				"elementId": "button 1",
 				"elementName": "someField",
+				"lastElementId": "31810",
+				"lastElementName": "someField",
 				"referrers": []
 			},
 			"timestamp": "2016-04-15T21:10:24.956+01"

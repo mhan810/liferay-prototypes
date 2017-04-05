@@ -22,6 +22,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
     "entityId",
     "entityName",
     "entityType",
+    "lastElementId",
+    "lastElementName",
     "referrers"
 })
 public class Properties {
@@ -36,6 +38,10 @@ public class Properties {
     private String entityName;
     @JsonProperty("entityType")
     private String entityType;
+    @JsonProperty("lastElementId")
+    private String lastElementId;
+    @JsonProperty("lastElementName")
+    private String lastElementName;
     @JsonProperty("referrers")
     private List<Object> referrers = new ArrayList<Object>();
     @JsonIgnore
@@ -144,6 +150,46 @@ public class Properties {
     /**
      * 
      * @return
+     *     The lastElementId
+     */
+    @JsonProperty("lastElementId")
+    public String getLastElementId() {
+        return lastElementId;
+    }
+
+    /**
+     * 
+     * @param lastElementId
+     *     The lastElementId
+     */
+    @JsonProperty("lastElementId")
+    public void setLastElementId(String lastElementId) {
+        this.lastElementId = lastElementId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The lastElementName
+     */
+    @JsonProperty("lastElementName")
+    public String getLastElementName() {
+        return lastElementName;
+    }
+
+    /**
+     * 
+     * @param lastElementName
+     *     The lastElementName
+     */
+    @JsonProperty("lastElementName")
+    public void setLastElementName(String lastElementName) {
+        this.lastElementName = lastElementName;
+    }
+
+    /**
+     * 
+     * @return
      *     The referrers
      */
     @JsonProperty("referrers")
@@ -178,7 +224,7 @@ public class Properties {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(elementId).append(elementName).append(entityId).append(entityName).append(entityType).append(referrers).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(elementId).append(elementName).append(entityId).append(entityName).append(entityType).append(lastElementId).append(lastElementName).append(referrers).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -190,7 +236,7 @@ public class Properties {
             return false;
         }
         Properties rhs = ((Properties) other);
-        return new EqualsBuilder().append(elementId, rhs.elementId).append(elementName, rhs.elementName).append(entityId, rhs.entityId).append(entityName, rhs.entityName).append(entityType, rhs.entityType).append(referrers, rhs.referrers).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(elementId, rhs.elementId).append(elementName, rhs.elementName).append(entityId, rhs.entityId).append(entityName, rhs.entityName).append(entityType, rhs.entityType).append(lastElementId, rhs.lastElementId).append(lastElementName, rhs.lastElementName).append(referrers, rhs.referrers).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
 }

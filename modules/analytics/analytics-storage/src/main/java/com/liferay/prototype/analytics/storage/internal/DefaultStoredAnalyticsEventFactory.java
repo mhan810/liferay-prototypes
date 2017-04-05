@@ -153,6 +153,8 @@ public class DefaultStoredAnalyticsEventFactory
 		storedProperties.setEntityId(properties.getEntityId());
 		storedProperties.setEntityName(properties.getEntityName());
 		storedProperties.setEntityType(properties.getEntityType());
+		storedProperties.setLastElementId(properties.getLastElementId());
+		storedProperties.setLastElementName(properties.getLastElementName());
 		storedProperties.setReferrers(properties.getReferrers());
 
 		Map<String, Object> additionalProperties =
