@@ -12,6 +12,7 @@ import java.text.DateFormat;
 
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Random;
 
 import org.osgi.service.component.annotations.Activate;
@@ -57,10 +58,14 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 		if (completForm) {
 			formExit  = createFormEvent(
 				format, "form-submit", timestamp, entityId);
-		}
-		else {
-			formExit = createFormEvent(
-				format, "form-cancel", timestamp, entityId);
+
+			AdditionalInfo additionalInfo = formExit.getAdditionalInfo();
+
+			OptionalInt optionalInt = random.ints(1, 300, 1200).findAny();
+
+			int formTime = optionalInt.orElse(300);
+
+			additionalInfo.setTime(random.nextInt(formTime));
 		}
 
 		events.add(formExit);
@@ -152,6 +157,10 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 		float percentage = random.nextFloat();
 
 		if (!completeForm && (percentage > .9)) {
+			timestamp = addFormCancelEvent(
+				"PostalCode", "Postal Code", entityId, events, dateFormat,
+				timestamp, random);
+
 			return timestamp;
 		}
 
@@ -179,7 +188,11 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 			"Employer", "Employer", entityId, events, random,
 			dateFormat, timestamp, duration);
 
-		if (!completeForm && (percentage > .6)) {
+		if (!completeForm && (percentage > .5)) {
+			timestamp = addFormCancelEvent(
+				"Employer", "Employer", entityId, events, dateFormat,
+				timestamp, random);
+
 			return timestamp;
 		}
 
@@ -194,6 +207,28 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 		timestamp = addFormFieldEventsPair(
 			"DateOfBirth", "Date of Birth", entityId, events, random,
 			dateFormat, timestamp, duration);
+
+		return timestamp;
+	}
+
+	private long addFormCancelEvent(
+		String lastFieldId, String lastFieldName, int entityId,
+		List<Event> events, DateFormat dateFormat, long timestamp,
+		Random random) {
+
+		timestamp = getNextTimestamp(random, timestamp);
+
+		EventBuilder formEventBuilder = createFormEventBuilder(
+			dateFormat, "form-cancel", timestamp, entityId);
+
+		Properties properties = formEventBuilder.getProperties();
+
+		properties.setLastElementId(lastFieldId);
+		properties.setLastElementName(lastFieldName);
+
+		formEventBuilder.setAdditionalInfoTime(random.nextInt(600));
+
+		events.add(formEventBuilder.getEvent());
 
 		return timestamp;
 	}
