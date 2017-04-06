@@ -176,6 +176,15 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 			"MonthlyPayment", "Monthly Payment", entityId, events, random,
 			dateFormat, timestamp, duration);
 
+		percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .6)) {
+			timestamp = addFormCancelEvent(
+				"TypesOfResidence", "Types of Residence", entityId, events,
+				dateFormat, timestamp, random);
+
+			return timestamp;
+		}
 		timestamp = addFormFieldEventsPair(
 			"GrossAnnualIncome", "Gross Annual Income", entityId, events,
 			random, dateFormat, timestamp, duration);
@@ -188,7 +197,9 @@ public class CreditCardFormEventGenerator implements FormEventGenerator {
 			"Employer", "Employer", entityId, events, random,
 			dateFormat, timestamp, duration);
 
-		if (!completeForm && (percentage > .5)) {
+		percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .8)) {
 			timestamp = addFormCancelEvent(
 				"Employer", "Employer", entityId, events, dateFormat,
 				timestamp, random);
