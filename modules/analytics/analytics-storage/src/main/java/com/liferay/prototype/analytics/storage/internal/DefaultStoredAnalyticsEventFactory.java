@@ -5,8 +5,8 @@ import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.storage.StoredAnalyticsEventFactory;
 import com.liferay.prototype.analytics.storage.stubs.AdditionalInfo;
-import com.liferay.prototype.analytics.storage.stubs.MessageContext;
 import com.liferay.prototype.analytics.storage.stubs.Location;
+import com.liferay.prototype.analytics.storage.stubs.MessageContext;
 import com.liferay.prototype.analytics.storage.stubs.Properties;
 import com.liferay.prototype.analytics.storage.stubs.StoredAnalyticsEvent;
 
@@ -88,6 +88,26 @@ public class DefaultStoredAnalyticsEventFactory
 		return storageAdditionalInfo;
 	}
 
+	protected Location convert(
+		com.liferay.prototype.analytics.data.binding.stubs.Location location) {
+
+		if (location == null) {
+			return null;
+		}
+
+		Location storedLocation = new Location();
+
+		storedLocation.setLat(location.getLatitude());
+		storedLocation.setLon(location.getLongitude());
+
+		Map<String, Object> additionalProperties =
+			location.getAdditionalProperties();
+
+		additionalProperties.forEach(storedLocation::setAdditionalProperty);
+
+		return storedLocation;
+	}
+
 	protected MessageContext convert(
 		com.liferay.prototype.analytics.data.binding.stubs.MessageContext
 			messageContext) {
@@ -116,26 +136,6 @@ public class DefaultStoredAnalyticsEventFactory
 			storedMessageContext::setAdditionalProperty);
 
 		return storedMessageContext;
-	}
-
-	protected Location convert(
-		com.liferay.prototype.analytics.data.binding.stubs.Location location) {
-
-		if (location == null) {
-			return null;
-		}
-
-		Location storedLocation = new Location();
-
-		storedLocation.setLat(location.getLatitude());
-		storedLocation.setLon(location.getLongitude());
-
-		Map<String, Object> additionalProperties =
-			location.getAdditionalProperties();
-
-		additionalProperties.forEach(storedLocation::setAdditionalProperty);
-
-		return storedLocation;
 	}
 
 	protected Properties convert(

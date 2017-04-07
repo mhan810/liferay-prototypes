@@ -3,15 +3,14 @@ package com.liferay.prototype.analytics.web.internal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StackTraceUtil;
-import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.prototype.analytics.data.binding.JSONObjectMapper;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
 import com.liferay.prototype.analytics.processor.AnalyticsMessageProcessor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-
 import java.io.InputStream;
+import java.io.PrintWriter;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -88,10 +87,9 @@ public class AnalyticsServlet extends HttpServlet {
 			HttpServletResponse httpServletResponse)
 		throws IOException, ServletException {
 
-		try (InputStream inputstream = httpServletRequest.getInputStream()){
-
+		try (InputStream inputstream = httpServletRequest.getInputStream()) {
 			AnalyticsEvents analyticsEvents = jsonObjectMapper.convert(
-					inputstream);
+				inputstream);
 
 			String messageFormat = analyticsEvents.getMessageFormat();
 
@@ -110,10 +108,13 @@ public class AnalyticsServlet extends HttpServlet {
 			analyticsMessageProcessor.processMessage(analyticsEvents);
 		}
 		catch (Exception e) {
-			httpServletResponse.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
+			httpServletResponse.setStatus(
+				HttpServletResponse.SC_EXPECTATION_FAILED);
 
-			httpServletResponse.getWriter().println("Liferay Analytics Prototype");
-			httpServletResponse.getWriter().println(StackTraceUtil.getStackTrace(e));
+			PrintWriter writer = httpServletResponse.getWriter();
+
+			writer.println("Liferay Analytics Prototype");
+			writer.println(StackTraceUtil.getStackTrace(e));
 
 			if (_log.isWarnEnabled()) {
 				_log.warn("Could not parse: ", e);

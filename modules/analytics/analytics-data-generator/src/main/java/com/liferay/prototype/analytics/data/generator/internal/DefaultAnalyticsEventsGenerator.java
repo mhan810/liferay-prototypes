@@ -107,12 +107,6 @@ public class DefaultAnalyticsEventsGenerator
 			formEventGenerator.getFormName(), formEventGenerator);
 	}
 
-	protected void removeFormEventGenerator(
-		FormEventGenerator formEventGenerator) {
-
-			_formEventGenerators.remove(formEventGenerator.getFormName());
-	}
-
 	protected Event createEvent(String eventType, long timestamp) {
 		EventBuilder eventBuilder = new EventBuilder(
 			_analyticsEventsGeneratorConfiguration, _dateFormat);
@@ -285,6 +279,12 @@ public class DefaultAnalyticsEventsGenerator
 
 	protected int randomUserId(Random random) {
 		return random.nextInt(5000);
+	}
+
+	protected void removeFormEventGenerator(
+		FormEventGenerator formEventGenerator) {
+
+			_formEventGenerators.remove(formEventGenerator.getFormName());
 	}
 
 	@Reference

@@ -22,6 +22,9 @@
 		"groupId": {
 			"type": "long"
 		},
+		"mesageFormat": {
+			"type": "keyword"
+		},
 		"messageContext": {
 			"properties": {
 				"companyId": {
@@ -53,9 +56,6 @@
 				}
 			}
 		},
-		"mesageFormat": {
-			"type": "keyword"
-		},
 		"properties": {
 			"properties": {
 				"elementId": {
@@ -76,8 +76,8 @@
 			}
 		},
 		"timpestamp": {
-			"type": "date",
-			"format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+			"format": "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+			"type": "date"
 		}
 	}
 }
