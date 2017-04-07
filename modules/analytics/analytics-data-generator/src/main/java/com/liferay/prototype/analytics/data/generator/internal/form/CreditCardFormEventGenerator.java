@@ -39,6 +39,7 @@ public class CreditCardFormEventGenerator
 				AnalyticsEventsGeneratorConfiguration.class, properties);
 	}
 
+	@Override
 	protected long createFormFieldEvents(
 		Random random, List<Event> events, DateFormat dateFormat,
 		long timestamp, boolean completeForm, int entityId) {
@@ -54,12 +55,22 @@ public class CreditCardFormEventGenerator
 			duration);
 
 		timestamp = addFormFieldEventsPair(
-			"LastName", "LastName", entityId, events, random, dateFormat,
+			"LastName", "Last Name", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
 			"StreetAddress", "Street Address", entityId, events, random,
 			dateFormat, timestamp, duration);
+
+		float percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .95)) {
+			timestamp = addFormCancelEvent(
+				"StreetAddress", "Street Address", entityId, events, dateFormat,
+				timestamp, random);
+
+			return timestamp;
+		}
 
 		timestamp = addFormFieldEventsPair(
 			"StreetAddress2", "Street Address 2", entityId, events, random,
@@ -77,11 +88,29 @@ public class CreditCardFormEventGenerator
 			"PostalCode", "PostalCode", entityId, events, random, dateFormat,
 			timestamp, duration);
 
-		float percentage = random.nextFloat();
+		timestamp = addFormFieldEventsPair(
+			"EmailAddress", "Email Address", entityId, events, random,
+			dateFormat, timestamp, duration);
 
-		if (!completeForm && (percentage > .9)) {
+		percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .8)) {
 			timestamp = addFormCancelEvent(
-				"PostalCode", "Postal Code", entityId, events, dateFormat,
+				"EmailAddress", "Email Address", entityId, events, dateFormat,
+				timestamp, random);
+
+			return timestamp;
+		}
+
+		timestamp = addFormFieldEventsPair(
+			"PhoneNumber", "Phone Number", entityId, events, random, dateFormat,
+			timestamp, duration);
+
+		percentage = random.nextFloat();
+
+		if (!completeForm && (percentage > .78)) {
+			timestamp = addFormCancelEvent(
+				"PhoneNumber", "Phone Number", entityId, events, dateFormat,
 				timestamp, random);
 
 			return timestamp;
@@ -101,17 +130,17 @@ public class CreditCardFormEventGenerator
 
 		percentage = random.nextFloat();
 
+		timestamp = addFormFieldEventsPair(
+			"GrossAnnualIncome", "Gross Annual Income", entityId, events,
+			random, dateFormat, timestamp, duration);
+
 		if (!completeForm && (percentage > .6)) {
 			timestamp = addFormCancelEvent(
-				"TypesOfResidence", "Types of Residence", entityId, events,
+				"GrossAnnualIncome", "Gross Annual Income", entityId, events,
 				dateFormat, timestamp, random);
 
 			return timestamp;
 		}
-
-		timestamp = addFormFieldEventsPair(
-			"GrossAnnualIncome", "Gross Annual Income", entityId, events,
-			random, dateFormat, timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
 			"SourceOfIncome", "Source of Income", entityId, events, random,
@@ -135,6 +164,14 @@ public class CreditCardFormEventGenerator
 			"SocialSecurityNumber", "Social Security Number", entityId, events,
 			random, dateFormat, timestamp, duration);
 
+		if (!completeForm) {
+			timestamp = addFormCancelEvent(
+				"SocialSecurityNumber", "Social Security Number", entityId,
+				events, dateFormat, timestamp, random);
+
+			return timestamp;
+		}
+
 		timestamp = addFormFieldEventsPair(
 			"MothersMaidenName", "Mother's Maiden Name", entityId, events,
 			random, dateFormat, timestamp, duration);
@@ -147,7 +184,7 @@ public class CreditCardFormEventGenerator
 	}
 
 	protected float getFormCompletionPercentage() {
-		return 0.7f;
+		return 0.6f;
 	}
 
 }
