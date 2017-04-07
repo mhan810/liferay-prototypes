@@ -14,6 +14,11 @@ import java.io.InputStreamReader;
 
 import java.net.URI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ForkJoinPool;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -31,17 +36,27 @@ import org.osgi.service.component.annotations.Reference;
 public class AnalyticsEventsGeneratorGogoClient {
 
 	public void generate(int count) {
-		try {
-			for (int i = 0; i < count; i++) {
-				AnalyticsEvents analyticsEvents =
-					_analyticsEventsGenerator.generateEvents();
+		ForkJoinPool forkJoinPool = new ForkJoinPool();
 
-				_analyticsMessageProcessor.processMessage(analyticsEvents);
-			}
+		int maxThreads = forkJoinPool.getParallelism();
+
+		int iterations = Math.floorMod(count, maxThreads);
+
+		int remainder = count - (iterations * maxThreads);
+
+		Collection<Callable<Void>> callables = new ArrayList<>(maxThreads + 1);
+
+		for (int i = 0; i < maxThreads; i++) {
+			Callable<Void> callable = createCallable(iterations);
+
+			callables.add(callable);
 		}
-		catch (Exception e) {
-			_log.error(e, e);
-		}
+
+		Callable<Void> callable = createCallable(remainder);
+
+		callables.add(callable);
+
+		forkJoinPool.invokeAll(callables);
 	}
 
 	public void load(String fileURI) {
@@ -63,6 +78,19 @@ public class AnalyticsEventsGeneratorGogoClient {
 		catch (Exception e) {
 			_log.error(e, e);
 		}
+	}
+
+	protected Callable<Void> createCallable(int iterations) {
+		return () -> {
+			for (int i = 0; i < iterations; i++) {
+				AnalyticsEvents analyticsEvents =
+					_analyticsEventsGenerator.generateEvents();
+
+				_analyticsMessageProcessor.processMessage(analyticsEvents);
+			}
+
+			return null;
+		};
 	}
 
 	@Reference(

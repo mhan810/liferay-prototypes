@@ -1,6 +1,5 @@
 package com.liferay.prototype.analytics.data.generator.form;
 
-import com.liferay.prototype.analytics.data.binding.stubs.AdditionalInfo;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.data.generator.internal.EventBuilder;
