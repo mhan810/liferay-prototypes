@@ -24,10 +24,10 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 
 		int entityId = random.nextInt(50000);
 
-		Event formEnter = createFormEvent(
+		EventBuilder formEnterEventBuilder = createFormEventBuilder(
 			format, "form-enter", timestamp, entityId);
 
-		events.add(formEnter);
+		events.add(formEnterEventBuilder.getEvent());
 
 		float percentage = random.nextFloat();
 
@@ -42,22 +42,19 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 
 		timestamp = getNextTimestamp(random, timestamp);
 
-		Event formExit = null;
-
 		if (completForm) {
-			formExit = createFormEvent(
+			EventBuilder formExitEventBuilder = createFormEventBuilder(
 				format, "form-submit", timestamp, entityId);
-
-			AdditionalInfo additionalInfo = formExit.getAdditionalInfo();
 
 			OptionalInt optionalInt = random.ints(1, 300, 1200).findAny();
 
 			int formTime = optionalInt.orElse(300);
 
-			additionalInfo.setTime(random.nextInt(formTime));
-		}
+			formExitEventBuilder.setAdditionalInfoTime(
+				random.nextInt(formTime));
 
-		events.add(formExit);
+			events.add(formExitEventBuilder.getEvent());
+		}
 
 		return timestamp;
 	}

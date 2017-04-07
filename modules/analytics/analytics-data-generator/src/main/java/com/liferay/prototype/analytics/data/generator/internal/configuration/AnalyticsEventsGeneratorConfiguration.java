@@ -36,8 +36,8 @@ public interface AnalyticsEventsGeneratorConfiguration {
 	public String messageFormat();
 
 	@Meta.AD(
-		deflt = "2017-04-15T21:10:25.004Z",
-		description = "2017-04-15T21:10:25.004Z", required = false
+		deflt = "2017-04-15T21:10:25.004-0000",
+		description = "2017-04-15T21:10:25.004-0000", required = false
 	)
 	public String timestampEnd();
 
@@ -45,8 +45,8 @@ public interface AnalyticsEventsGeneratorConfiguration {
 	public long timestampInterval();
 
 	@Meta.AD(
-		deflt = "2017-03-15T21:10:25.004Z",
-		description = "2017-03-15T21:10:25.004Z", required = false
+		deflt = "2017-03-15T21:10:25.004-0000",
+		description = "2017-03-15T21:10:25.004-0000", required = false
 	)
 	public String timestampStart();
 

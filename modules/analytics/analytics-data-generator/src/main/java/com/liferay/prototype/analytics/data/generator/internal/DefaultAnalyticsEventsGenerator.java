@@ -143,15 +143,15 @@ public class DefaultAnalyticsEventsGenerator
 		if (percentage > 0.6) {
 			percentage = random.nextFloat();
 
-			if (percentage < 0.4) {
-				formName = "Savings Account Application";
+			if (percentage < 0.3) {
+				formName = "Savings Account Application Form";
 			}
-			else if ((percentage >= 0.4) && (percentage < 0.8)) {
-				formName = "Credit Card Application";
+			else if ((percentage >= 0.3) && (percentage < 0.8)) {
+				formName = "Credit Card Application Form";
 			}
 
 			if (percentage >= 0.8) {
-				formName = "Auto Loan Application";
+				formName = "Auto Insurance Application Form";
 			}
 		}
 
