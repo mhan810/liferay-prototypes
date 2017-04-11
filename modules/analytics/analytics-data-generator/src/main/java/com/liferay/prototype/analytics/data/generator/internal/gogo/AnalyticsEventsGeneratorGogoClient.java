@@ -40,7 +40,7 @@ public class AnalyticsEventsGeneratorGogoClient {
 
 		int maxThreads = forkJoinPool.getParallelism();
 
-		int iterations = Math.floorMod(count, maxThreads);
+		int iterations = Math.floorDiv(count, maxThreads);
 
 		int remainder = count - (iterations * maxThreads);
 
@@ -52,9 +52,11 @@ public class AnalyticsEventsGeneratorGogoClient {
 			callables.add(callable);
 		}
 
-		Callable<Void> callable = createCallable(remainder);
+		if (remainder > 0) {
+			Callable<Void> callable = createCallable(remainder);
 
-		callables.add(callable);
+			callables.add(callable);
+		}
 
 		forkJoinPool.invokeAll(callables);
 	}
