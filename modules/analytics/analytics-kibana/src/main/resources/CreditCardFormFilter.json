@@ -1,0 +1,49 @@
+{
+	"query": {
+		"bool": {
+			"must": [
+				{
+					"constant_score": {
+						"filter": {
+							"terms": {
+								"event": [
+									"app-start",
+									"form-enter",
+									"form-submit"
+								]
+							}
+						}
+					}
+				},
+				{
+					"bool": {
+						"should": [
+							{
+								"bool": {
+									"must_not": [
+										{
+											"exists": {
+												"field": "properties.entityName"
+											}
+										}
+									]
+								}
+							},
+							{
+								"constant_score": {
+									"filter": {
+										"terms": {
+											"properties.entityName": [
+												"Credit Card Application Form"
+											]
+										}
+									}
+								}
+							}
+						]
+					}
+				}
+			]
+		}
+	}
+}

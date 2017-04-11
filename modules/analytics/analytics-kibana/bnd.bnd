@@ -1,0 +1,3 @@
+Bundle-Name: Analytics Prototype Kibana
+Bundle-SymbolicName: com.liferay.prototype.analytics.kibana
+Bundle-Version: 1.0.0
