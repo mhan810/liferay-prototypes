@@ -19,10 +19,13 @@
 		"event": {
 			"type": "keyword"
 		},
+		"channel": {
+			"type": "keyword"
+		},
 		"groupId": {
 			"type": "long"
 		},
-		"mesageFormat": {
+		"messageFormat": {
 			"type": "keyword"
 		},
 		"messageContext": {
@@ -71,6 +74,12 @@
 					"type": "keyword"
 				},
 				"entityType": {
+					"type": "keyword"
+				},
+				"lastElementId": {
+					"type": "keyword"
+				},
+				"lastElementName": {
 					"type": "keyword"
 				}
 			}
