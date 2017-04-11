@@ -137,6 +137,12 @@ public class ElasticsearchAnalyticsMessageStorage
 			"client.transport.sniff",
 			_elasticsearchAnalyticsMessageStorageConfiguration.
 				clientTransportSniff());
+
+		settingsBuilder.put("node.master", false);
+		settingsBuilder.put("node.data", false);
+		settingsBuilder.put("node.ingest", false);
+		settingsBuilder.put("search.remote.connect", false);
+
 		settingsBuilder.put(
 			"cluster.name",
 			_elasticsearchAnalyticsMessageStorageConfiguration.clusterName());
