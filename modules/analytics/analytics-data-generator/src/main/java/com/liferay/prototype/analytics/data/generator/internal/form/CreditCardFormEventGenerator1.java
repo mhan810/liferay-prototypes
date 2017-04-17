@@ -80,7 +80,7 @@ public class CreditCardFormEventGenerator1
 			duration);
 
 		timestamp = addFormFieldEventsPair(
-			"PostalCode", "PostalCode", entityId, events, random, dateFormat,
+			"PostalCode", "Postal Code", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
