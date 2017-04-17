@@ -151,7 +151,7 @@ public class DefaultAnalyticsEventsGenerator
 			}
 
 			if (percentage >= 0.85) {
-				formName = "Auto Insurance Application Form";
+				formName = "Home Mortgage Application Form";
 			}
 		}
 

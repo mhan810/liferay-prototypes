@@ -23,12 +23,12 @@ import org.osgi.service.component.annotations.Modified;
 	configurationPid = "com.liferay.prototype.analytics.internal.generator.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration",
 	immediate = true, service = FormEventGenerator.class
 )
-public class AutoInsuranceFormEventGenerator
+public class HomeMortgageFormEventGenerator
 	extends BaseFormEventGenerator implements FormEventGenerator {
 
 	@Override
 	public String getFormName() {
-		return "Auto Insurance Application Form";
+		return "Home Mortgage Application Form";
 	}
 
 	@Activate
