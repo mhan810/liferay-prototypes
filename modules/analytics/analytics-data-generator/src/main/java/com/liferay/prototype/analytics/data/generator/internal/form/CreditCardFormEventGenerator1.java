@@ -168,4 +168,8 @@ public class CreditCardFormEventGenerator1
 		return timestamp;
 	}
 
+	protected float getFormCompletionPercentage() {
+		return 0.7f;
+	}
+
 }

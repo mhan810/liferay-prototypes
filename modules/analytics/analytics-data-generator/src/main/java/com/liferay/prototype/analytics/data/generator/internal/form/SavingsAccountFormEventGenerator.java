@@ -204,7 +204,7 @@ public class SavingsAccountFormEventGenerator
 	}
 
 	protected float getFormCompletionPercentage() {
-		return 0.6f;
+		return 0.85f;
 	}
 
 }
