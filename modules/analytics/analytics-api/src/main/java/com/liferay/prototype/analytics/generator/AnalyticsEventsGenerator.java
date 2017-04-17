@@ -5,6 +5,6 @@ package com.liferay.prototype.analytics.generator;
  */
 public interface AnalyticsEventsGenerator<T> {
 
-	public T generateEvents();
+	public T generateEvents(int mode);
 
 }

@@ -54,7 +54,7 @@ public class DefaultAnalyticsEventsGenerator
 	implements AnalyticsEventsGenerator<AnalyticsEvents> {
 
 	@Override
-	public AnalyticsEvents generateEvents() {
+	public AnalyticsEvents generateEvents(int mode) {
 		AnalyticsEvents analyticsEvents = new AnalyticsEvents();
 
 		Random random = new Random();
@@ -67,7 +67,7 @@ public class DefaultAnalyticsEventsGenerator
 
 		analyticsEvents.setMessageContext(createMessageContext(random));
 
-		List<Event> events = createEvents(random);
+		List<Event> events = createEvents(random, mode);
 
 		analyticsEvents.setEvents(events);
 
@@ -118,7 +118,7 @@ public class DefaultAnalyticsEventsGenerator
 		return eventBuilder.getEvent();
 	}
 
-	protected List<Event> createEvents(Random random) {
+	protected List<Event> createEvents(Random random, int mode) {
 		List<Event> events = new ArrayList<>();
 
 		long timestampStart = randomTimestampStart(random);
@@ -158,6 +158,18 @@ public class DefaultAnalyticsEventsGenerator
 		if (Validator.isNotNull(formName)) {
 			FormEventGenerator formEventGenerator = _formEventGenerators.get(
 				formName);
+
+			if (mode > 0) {
+				FormEventGenerator formEventGeneratorAlternateMode =
+					_formEventGenerators.get(formName + mode);
+
+				if (formEventGeneratorAlternateMode != null) {
+					formEventGenerator = formEventGeneratorAlternateMode;
+
+					System.out.print(
+						"Using mode: " + mode + " for " + formName);
+				}
+			}
 
 			timestamp = formEventGenerator.addFormEvents(
 				random, events, _dateFormat, timestamp);

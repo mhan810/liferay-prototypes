@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AnalyticsEventsGeneratorGogoClient {
 
-	public void generate(int count) {
+	public void generate(int mode, int count) {
 		ForkJoinPool forkJoinPool = new ForkJoinPool();
 
 		int maxThreads = forkJoinPool.getParallelism();
@@ -47,13 +47,13 @@ public class AnalyticsEventsGeneratorGogoClient {
 		Collection<Callable<Void>> callables = new ArrayList<>(maxThreads + 1);
 
 		for (int i = 0; i < maxThreads; i++) {
-			Callable<Void> callable = createCallable(iterations);
+			Callable<Void> callable = createCallable(mode, iterations);
 
 			callables.add(callable);
 		}
 
 		if (remainder > 0) {
-			Callable<Void> callable = createCallable(remainder);
+			Callable<Void> callable = createCallable(mode, remainder);
 
 			callables.add(callable);
 		}
@@ -82,11 +82,11 @@ public class AnalyticsEventsGeneratorGogoClient {
 		}
 	}
 
-	protected Callable<Void> createCallable(int iterations) {
+	protected Callable<Void> createCallable(int mode, int iterations) {
 		return () -> {
 			for (int i = 0; i < iterations; i++) {
 				AnalyticsEvents analyticsEvents =
-					_analyticsEventsGenerator.generateEvents();
+					_analyticsEventsGenerator.generateEvents(mode);
 
 				_analyticsMessageProcessor.processMessage(analyticsEvents);
 			}
