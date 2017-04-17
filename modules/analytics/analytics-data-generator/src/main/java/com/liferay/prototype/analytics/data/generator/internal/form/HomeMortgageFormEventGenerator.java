@@ -60,19 +60,35 @@ public class HomeMortgageFormEventGenerator
 		}
 
 		timestamp = addFormFieldEventsPair(
+			"PurchasePrice", "Purchase Price", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"LoanAmount", "Loan Amount", entityId, events, random, dateFormat,
+			timestamp, duration);
+
+		if (!completeForm && (percentage > .75)) {
+			timestamp = addFormCancelEvent(
+				"LoanAmount", "Loan Amount", entityId, events, dateFormat,
+				timestamp, random);
+
+			return timestamp;
+		}
+
+		timestamp = addFormFieldEventsPair(
+			"PropertyState", "Property State", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
+			"PropertyZipCode", "Property Zip Code", entityId, events, random,
+			dateFormat, timestamp, duration);
+
+		timestamp = addFormFieldEventsPair(
 			"FirstName", "First Name", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
 			"LastName", "LastName", entityId, events, random, dateFormat,
-			timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"State", "State", entityId, events, random, dateFormat, timestamp,
-			duration);
-
-		timestamp = addFormFieldEventsPair(
-			"ZipCode", "Zip Code", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
