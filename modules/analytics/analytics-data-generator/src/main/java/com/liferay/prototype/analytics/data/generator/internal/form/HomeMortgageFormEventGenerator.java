@@ -46,102 +46,48 @@ public class HomeMortgageFormEventGenerator
 		int duration = random.nextInt(5000);
 
 		timestamp = addFormFieldEventsPair(
-			"FirstName", "First Name", entityId, events, random, dateFormat,
-			timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"MI", "M.I.", entityId, events, random, dateFormat, timestamp,
-			duration);
-
-		timestamp = addFormFieldEventsPair(
-			"LastName", "LastName", entityId, events, random, dateFormat,
-			timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"StreetAddress", "Street Address", entityId, events, random,
-			dateFormat, timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"StreetAddress2", "Street Address 2", entityId, events, random,
-			dateFormat, timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"City", "City", entityId, events, random, dateFormat, timestamp,
-			duration);
-
-		timestamp = addFormFieldEventsPair(
-			"State", "State", entityId, events, random, dateFormat, timestamp,
-			duration);
-
-		timestamp = addFormFieldEventsPair(
-			"PostalCode", "PostalCode", entityId, events, random, dateFormat,
+			"YourGoals", "Your Goals", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		float percentage = random.nextFloat();
 
-		if (!completeForm && (percentage > .9)) {
+		if (!completeForm && (percentage > .5)) {
 			timestamp = addFormCancelEvent(
-				"PostalCode", "Postal Code", entityId, events, dateFormat,
+				"YourGoals", "Your Goals", entityId, events, dateFormat,
 				timestamp, random);
 
 			return timestamp;
 		}
 
 		timestamp = addFormFieldEventsPair(
-			"AccountsYouOwn", "Accounts You Own", entityId, events, random,
-			dateFormat, timestamp, duration);
+			"FirstName", "First Name", entityId, events, random, dateFormat,
+			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
-			"TypesOfResidence", "Types of Residence", entityId, events, random,
-			dateFormat, timestamp, duration);
+			"LastName", "LastName", entityId, events, random, dateFormat,
+			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
-			"MonthlyPayment", "Monthly Payment", entityId, events, random,
-			dateFormat, timestamp, duration);
-
-		percentage = random.nextFloat();
-
-		if (!completeForm && (percentage > .6)) {
-			timestamp = addFormCancelEvent(
-				"TypesOfResidence", "Types of Residence", entityId, events,
-				dateFormat, timestamp, random);
-
-			return timestamp;
-		}
+			"State", "State", entityId, events, random, dateFormat, timestamp,
+			duration);
 
 		timestamp = addFormFieldEventsPair(
-			"GrossAnnualIncome", "Gross Annual Income", entityId, events,
-			random, dateFormat, timestamp, duration);
+			"ZipCode", "Zip Code", entityId, events, random, dateFormat,
+			timestamp, duration);
 
 		timestamp = addFormFieldEventsPair(
-			"SourceOfIncome", "Source of Income", entityId, events, random,
-			dateFormat, timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"Employer", "Employer", entityId, events, random, dateFormat,
+			"PhoneNumber", "Phone Number", entityId, events, random, dateFormat,
 			timestamp, duration);
 
 		percentage = random.nextFloat();
 
-		if (!completeForm && (percentage > .8)) {
+		if (!completeForm && (percentage > .9)) {
 			timestamp = addFormCancelEvent(
-				"Employer", "Employer", entityId, events, dateFormat, timestamp,
-				random);
+				"PhoneNumber", "Phone Number", entityId, events, dateFormat,
+				timestamp, random);
 
 			return timestamp;
 		}
-
-		timestamp = addFormFieldEventsPair(
-			"SocialSecurityNumber", "Social Security Number", entityId, events,
-			random, dateFormat, timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"MothersMaidenName", "Mother's Maiden Name", entityId, events,
-			random, dateFormat, timestamp, duration);
-
-		timestamp = addFormFieldEventsPair(
-			"DateOfBirth", "Date of Birth", entityId, events, random,
-			dateFormat, timestamp, duration);
 
 		return timestamp;
 	}
