@@ -143,14 +143,14 @@ public class DefaultAnalyticsEventsGenerator
 		if (percentage > 0.6) {
 			percentage = random.nextFloat();
 
-			if (percentage < 0.3) {
+			if (percentage < 0.25) {
 				formName = "Savings Account Application Form";
 			}
-			else if ((percentage >= 0.3) && (percentage < 0.8)) {
+			else if ((percentage >= 0.25) && (percentage < 0.85)) {
 				formName = "Credit Card Application Form";
 			}
 
-			if (percentage >= 0.8) {
+			if (percentage >= 0.85) {
 				formName = "Auto Insurance Application Form";
 			}
 		}
@@ -170,7 +170,7 @@ public class DefaultAnalyticsEventsGenerator
 		EventBuilder appCloseEvent = new EventBuilder(
 			_analyticsEventsGeneratorConfiguration, _dateFormat);
 
-		appCloseEvent.setEventType("app_close");
+		appCloseEvent.setEventType("app-end");
 
 		appCloseEvent.setTimestamp(timestamp);
 
