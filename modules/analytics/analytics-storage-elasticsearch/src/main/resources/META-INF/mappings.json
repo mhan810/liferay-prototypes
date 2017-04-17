@@ -16,17 +16,14 @@
 		"applicationId": {
 			"type": "keyword"
 		},
-		"event": {
+		"channel": {
 			"type": "keyword"
 		},
-		"channel": {
+		"event": {
 			"type": "keyword"
 		},
 		"groupId": {
 			"type": "long"
-		},
-		"messageFormat": {
-			"type": "keyword"
 		},
 		"messageContext": {
 			"properties": {
@@ -58,6 +55,9 @@
 					"type": "keyword"
 				}
 			}
+		},
+		"messageFormat": {
+			"type": "keyword"
 		},
 		"properties": {
 			"properties": {
