@@ -19,7 +19,9 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ForkJoinPool;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -36,9 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 public class AnalyticsEventsGeneratorGogoClient {
 
 	public void generate(int mode, int count) {
-		ForkJoinPool forkJoinPool = new ForkJoinPool();
-
-		int maxThreads = forkJoinPool.getParallelism();
+		int maxThreads = _forkJoinPool.getParallelism();
 
 		int iterations = Math.floorDiv(count, maxThreads);
 
@@ -46,10 +46,12 @@ public class AnalyticsEventsGeneratorGogoClient {
 
 		Collection<Callable<Void>> callables = new ArrayList<>(maxThreads + 1);
 
-		for (int i = 0; i < maxThreads; i++) {
-			Callable<Void> callable = createCallable(mode, iterations);
+		if (iterations > 0) {
+			for (int i = 0; i < maxThreads; i++) {
+				Callable<Void> callable = createCallable(mode, iterations);
 
-			callables.add(callable);
+				callables.add(callable);
+			}
 		}
 
 		if (remainder > 0) {
@@ -58,7 +60,13 @@ public class AnalyticsEventsGeneratorGogoClient {
 			callables.add(callable);
 		}
 
-		forkJoinPool.invokeAll(callables);
+		/*
+		System.out.println(
+			"Using " + maxThreads + " threads to process: " + callables.size());
+		System.out.println("Each run will have " + iterations + " iterations.");
+		*/
+
+		_forkJoinPool.invokeAll(callables);
 	}
 
 	public void load(String fileURI) {
@@ -82,17 +90,36 @@ public class AnalyticsEventsGeneratorGogoClient {
 		}
 	}
 
+	@Activate
+	protected void activate() {
+		_forkJoinPool = new ForkJoinPool();
+	}
+
 	protected Callable<Void> createCallable(int mode, int iterations) {
 		return () -> {
 			for (int i = 0; i < iterations; i++) {
+				//long start = System.currentTimeMillis();
+
 				AnalyticsEvents analyticsEvents =
 					_analyticsEventsGenerator.generateEvents(mode);
 
 				_analyticsMessageProcessor.processMessage(analyticsEvents);
+
+				/*
+				System.out.println(
+					Thread.currentThread().getName() +
+						" completed iteration : " +
+							(System.currentTimeMillis() - start));
+				*/
 			}
 
 			return null;
 		};
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_forkJoinPool.shutdownNow();
 	}
 
 	@Reference(
@@ -111,6 +138,8 @@ public class AnalyticsEventsGeneratorGogoClient {
 	@Reference(target = "(messageFormat=FORMS)")
 	private AnalyticsMessageProcessor<AnalyticsEvents>
 		_analyticsMessageProcessor;
+
+	private ForkJoinPool _forkJoinPool;
 
 	@Reference
 	private JSONFactory _jsonFactory;
