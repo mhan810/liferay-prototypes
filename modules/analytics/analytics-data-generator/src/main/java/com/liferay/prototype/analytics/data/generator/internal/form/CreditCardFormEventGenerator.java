@@ -2,6 +2,7 @@ package com.liferay.prototype.analytics.data.generator.internal.form;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
+import com.liferay.prototype.analytics.data.binding.stubs.Location;
 import com.liferay.prototype.analytics.data.generator.form.BaseFormEventGenerator;
 import com.liferay.prototype.analytics.data.generator.form.FormEventGenerator;
 import com.liferay.prototype.analytics.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration;
@@ -29,6 +30,39 @@ public class CreditCardFormEventGenerator
 	@Override
 	public String getFormName() {
 		return "Credit Card Application Form";
+	}
+
+	@Override
+	public void populateLocation(Random random, Location location) {
+		float percent = random.nextFloat();
+
+		if (percent > .85) {
+			populateNYC(random, location);
+		}
+		else if (percent > .80) {
+			populateBOS(random, location);
+		}
+		else if (percent > .70) {
+			populatePHX(random, location);
+		}
+		else if (percent > .6) {
+			populateORD(random, location);
+		}
+		else if (percent > .55) {
+			populateSFO(random, location);
+		}
+		else if (percent > .40) {
+			populateSE(random, location);
+		}
+		else if (percent > .25) {
+			populateLAX(random, location);
+		}
+		else if (percent > .2) {
+			populateSEA(random, location);
+		}
+		else {
+			populateDFW(random, location);
+		}
 	}
 
 	@Activate

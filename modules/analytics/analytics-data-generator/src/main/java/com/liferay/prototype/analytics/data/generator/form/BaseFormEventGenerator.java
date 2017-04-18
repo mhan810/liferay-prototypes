@@ -179,12 +179,75 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 		Random random, List<Event> events, DateFormat format, long timestamp,
 		boolean completForm, int entityId);
 
+	protected void doPopulateLocation(
+		Random random, float latStart, float latEnd, float longStart,
+		float longEnd, Location location) {
+
+		OptionalDouble lat = random.doubles(1, latStart, latEnd).findAny();
+
+		lat.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
+
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+				location.setLatitude(bigDecimal.doubleValue());
+			});
+
+		OptionalDouble lon = random.doubles(1, longStart, longEnd).findAny();
+
+		lon.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
+
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+				location.setLongitude(bigDecimal.negate().doubleValue());
+			});
+	}
+
 	protected abstract float getFormCompletionPercentage();
 
 	protected long getNextTimestamp(Random random, long timestamp) {
 		timestamp += Math.round(random.nextDouble() * 10000);
 
 		return timestamp;
+	}
+
+	protected void populateBOS(Random random, Location location) {
+		doPopulateLocation(random, 41.4f, 43.0f, 70.8f, 72.0f, location);
+	}
+
+	protected void populateDFW(Random random, Location location) {
+		doPopulateLocation(random, 29.6f, 33.44f, 94.2f, 98.2f, location);
+	}
+
+	protected void populateLAX(Random random, Location location) {
+		doPopulateLocation(random, 33.6f, 34.96f, 116f, 119.95f, location);
+	}
+
+	protected void populateNYC(Random random, Location location) {
+		doPopulateLocation(random, 40.1f, 41.2f, 73.4f, 74.5f, location);
+	}
+
+	protected void populateORD(Random random, Location location) {
+		doPopulateLocation(random, 41.0f, 42.4f, 86.2f, 88.2f, location);
+	}
+
+	protected void populatePHX(Random random, Location location) {
+		doPopulateLocation(random, 38.5f, 40.6f, 75.5f, 78.0f, location);
+	}
+
+	protected void populateSE(Random random, Location location) {
+		doPopulateLocation(random, 29.8f, 34.5f, 81.5f, 85.6f, location);
+	}
+
+	protected void populateSEA(Random random, Location location) {
+		doPopulateLocation(random, 44.75f, 48.2f, 121.4f, 124.0f, location);
+	}
+
+	protected void populateSFO(Random random, Location location) {
+		doPopulateLocation(random, 37.0f, 38.2f, 121.4f, 122.8f, location);
 	}
 
 	protected volatile AnalyticsEventsGeneratorConfiguration
