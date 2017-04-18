@@ -1,13 +1,18 @@
 package com.liferay.prototype.analytics.data.generator.form;
 
 import com.liferay.prototype.analytics.data.binding.stubs.Event;
+import com.liferay.prototype.analytics.data.binding.stubs.Location;
 import com.liferay.prototype.analytics.data.binding.stubs.Properties;
 import com.liferay.prototype.analytics.data.generator.internal.EventBuilder;
 import com.liferay.prototype.analytics.data.generator.internal.configuration.AnalyticsEventsGeneratorConfiguration;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import java.text.DateFormat;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.Random;
 
@@ -32,7 +37,7 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 
 		boolean completForm = false;
 
-		if (percentage > getFormCompletionPercentage()) {
+		if (percentage < getFormCompletionPercentage()) {
 			completForm = true;
 		}
 
@@ -56,6 +61,31 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 		}
 
 		return timestamp;
+	}
+
+	@Override
+	public void populateLocation(Random random, Location location) {
+		OptionalDouble lat = random.doubles(1, 30.0, 45.0).findAny();
+
+		lat.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
+
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+				location.setLatitude(bigDecimal.doubleValue());
+			});
+
+		OptionalDouble lon = random.doubles(1, 70, 125.0).findAny();
+
+		lon.ifPresent(
+			value -> {
+				BigDecimal bigDecimal = new BigDecimal(value);
+
+				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+				location.setLongitude(bigDecimal.negate().doubleValue());
+			});
 	}
 
 	protected long addFormCancelEvent(

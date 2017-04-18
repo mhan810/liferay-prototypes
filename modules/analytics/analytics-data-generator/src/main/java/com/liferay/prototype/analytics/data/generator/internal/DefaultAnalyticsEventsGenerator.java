@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
@@ -65,9 +66,50 @@ public class DefaultAnalyticsEventsGenerator
 		analyticsEvents.setChannel(
 			_analyticsEventsGeneratorConfiguration.channel());
 
-		analyticsEvents.setMessageContext(createMessageContext(random));
+		float percentage = random.nextFloat();
 
-		List<Event> events = createEvents(random, mode);
+		String formName = null;
+
+		if (percentage > 0.6) {
+			percentage = random.nextFloat();
+
+			if (percentage < 0.25) {
+				formName = "Savings Account Application Form";
+			}
+			else if ((percentage >= 0.25) && (percentage < 0.85)) {
+				formName = "Credit Card Application Form";
+			}
+
+			if (percentage >= 0.85) {
+				formName = "Home Mortgage Application Form";
+			}
+		}
+
+		Optional<FormEventGenerator> formEventGeneratorOptional =
+			Optional.empty();
+
+		if (Validator.isNotNull(formName)) {
+			formEventGeneratorOptional = Optional.ofNullable(
+				_formEventGenerators.get(formName));
+
+			if (mode > 0) {
+				FormEventGenerator formEventGeneratorAlternateMode =
+					_formEventGenerators.get(formName + mode);
+
+				if (formEventGeneratorAlternateMode != null) {
+					formEventGeneratorOptional = Optional.of(
+						formEventGeneratorAlternateMode);
+
+					System.out.print(
+						"Using mode: " + mode + " for " + formName);
+				}
+			}
+		}
+
+		analyticsEvents.setMessageContext(
+			createMessageContext(random, formEventGeneratorOptional));
+
+		List<Event> events = createEvents(random, formEventGeneratorOptional);
 
 		analyticsEvents.setEvents(events);
 
@@ -118,12 +160,13 @@ public class DefaultAnalyticsEventsGenerator
 		return eventBuilder.getEvent();
 	}
 
-	protected List<Event> createEvents(Random random, int mode) {
+	protected List<Event> createEvents(
+		Random random,
+		Optional<FormEventGenerator> formEventGeneratorOptional) {
+
 		List<Event> events = new ArrayList<>();
 
-		long timestampStart = randomTimestampStart(random);
-
-		long timestamp = timestampStart;
+		long timestamp = randomTimestampStart(random);
 
 		EventBuilder appStartEventBuilder = new EventBuilder(
 			_analyticsEventsGeneratorConfiguration, _dateFormat);
@@ -136,42 +179,8 @@ public class DefaultAnalyticsEventsGenerator
 
 		timestamp = createViewEvents(random, events, timestamp);
 
-		float percentage = random.nextFloat();
-
-		String formName = null;
-
-		if (percentage > 0.6) {
-			percentage = random.nextFloat();
-
-			if (percentage < 0.25) {
-				formName = "Savings Account Application Form";
-			}
-			else if ((percentage >= 0.25) && (percentage < 0.85)) {
-				formName = "Credit Card Application Form";
-			}
-
-			if (percentage >= 0.85) {
-				formName = "Home Mortgage Application Form";
-			}
-		}
-
-		if (Validator.isNotNull(formName)) {
-			FormEventGenerator formEventGenerator = _formEventGenerators.get(
-				formName);
-
-			if (mode > 0) {
-				FormEventGenerator formEventGeneratorAlternateMode =
-					_formEventGenerators.get(formName + mode);
-
-				if (formEventGeneratorAlternateMode != null) {
-					formEventGenerator = formEventGeneratorAlternateMode;
-
-					System.out.print(
-						"Using mode: " + mode + " for " + formName);
-				}
-			}
-
-			timestamp = formEventGenerator.addFormEvents(
+		if (formEventGeneratorOptional.isPresent()) {
+			timestamp = formEventGeneratorOptional.get().addFormEvents(
 				random, events, _dateFormat, timestamp);
 
 			timestamp = createViewEvents(random, events, timestamp);
@@ -191,7 +200,10 @@ public class DefaultAnalyticsEventsGenerator
 		return events;
 	}
 
-	protected MessageContext createMessageContext(Random random) {
+	protected MessageContext createMessageContext(
+		Random random,
+		Optional<FormEventGenerator> formEventGeneratorOptional) {
+
 		MessageContext messageContext = new MessageContext();
 
 		messageContext.setCompanyId(
@@ -210,7 +222,8 @@ public class DefaultAnalyticsEventsGenerator
 			sb.toString().substring(0, sb.length() - 1));
 
 		messageContext.setLanguageId("en_US");
-		messageContext.setLocation(randomLocation(random));
+		messageContext.setLocation(
+			randomLocation(random, formEventGeneratorOptional));
 		messageContext.setSignedIn(true);
 		messageContext.setSessionId(portalUUID.generate());
 		messageContext.setUserId(randomUserId(random));
@@ -254,29 +267,42 @@ public class DefaultAnalyticsEventsGenerator
 		return deviceTypes[index];
 	}
 
-	protected Location randomLocation(Random random) {
+	protected Location randomLocation(
+		Random random,
+		Optional<FormEventGenerator> formEventGeneratorOptional) {
+
 		Location location = new Location();
 
-		OptionalDouble lat = random.doubles(1, 30.0, 45.0).findAny();
+		formEventGeneratorOptional.ifPresent(
+			formEventGenerator -> formEventGenerator.populateLocation(
+				random, location));
 
-		lat.ifPresent(
-			value -> {
-				BigDecimal bigDecimal = new BigDecimal(value);
+		formEventGeneratorOptional.orElseGet(
+			() -> {
+				OptionalDouble lat = random.doubles(1, 30.0, 45.0).findAny();
 
-				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+				lat.ifPresent(
+					value -> {
+						BigDecimal bigDecimal = new BigDecimal(value);
 
-				location.setLatitude(bigDecimal.doubleValue());
-			});
+						bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
 
-		OptionalDouble lon = random.doubles(1, 70, 125.0).findAny();
+						location.setLatitude(bigDecimal.doubleValue());
+					});
 
-		lon.ifPresent(
-			value -> {
-				BigDecimal bigDecimal = new BigDecimal(value);
+				OptionalDouble lon = random.doubles(1, 70, 125.0).findAny();
 
-				bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+				lon.ifPresent(
+					value -> {
+						BigDecimal bigDecimal = new BigDecimal(value);
 
-				location.setLongitude(bigDecimal.negate().doubleValue());
+						bigDecimal = bigDecimal.setScale(3, RoundingMode.FLOOR);
+
+						location.setLongitude(
+							bigDecimal.negate().doubleValue());
+					});
+
+				return null;
 			});
 
 		return location;
