@@ -29,7 +29,7 @@ public class CreditCardFormEventGenerator
 
 	@Override
 	public String getFormName() {
-		return "Credit Card Application Form";
+		return "Credit Card Application Form0";
 	}
 
 	@Override

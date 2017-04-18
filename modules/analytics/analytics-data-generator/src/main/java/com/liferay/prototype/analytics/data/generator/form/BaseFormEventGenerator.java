@@ -145,19 +145,6 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 		return timestamp;
 	}
 
-	protected Event createFormEvent(
-		DateFormat dateFormat, String eventType, long timestamp, int entityId) {
-
-		EventBuilder eventBuilder = createFormEventBuilder(
-			dateFormat, eventType, timestamp, entityId);
-
-		Properties properties = eventBuilder.getProperties();
-
-		properties.setElementName(getFormName());
-
-		return eventBuilder.getEvent();
-	}
-
 	protected EventBuilder createFormEventBuilder(
 		DateFormat dateFormat, String eventType, long timestamp, int entityId) {
 
@@ -169,7 +156,11 @@ public abstract class BaseFormEventGenerator implements FormEventGenerator {
 
 		Properties properties = eventBuilder.getProperties();
 
-		properties.setEntityName(getFormName());
+		String formName = getFormName().substring(
+			0, getFormName().length() - 1);
+
+		properties.setEntityName(formName);
+
 		properties.setEntityId(entityId);
 
 		return eventBuilder;

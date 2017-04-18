@@ -29,7 +29,7 @@ public class HomeMortgageFormEventGenerator
 
 	@Override
 	public String getFormName() {
-		return "Home Mortgage Application Form";
+		return "Home Mortgage Application Form0";
 	}
 
 	@Override

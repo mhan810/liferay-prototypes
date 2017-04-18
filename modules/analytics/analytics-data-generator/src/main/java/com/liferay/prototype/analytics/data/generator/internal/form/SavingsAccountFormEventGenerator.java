@@ -29,7 +29,7 @@ public class SavingsAccountFormEventGenerator
 
 	@Override
 	public String getFormName() {
-		return "Savings Account Application Form";
+		return "Savings Account Application Form0";
 	}
 
 	@Override

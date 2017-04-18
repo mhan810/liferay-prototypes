@@ -93,17 +93,7 @@ public class DefaultAnalyticsEventsGenerator
 
 		if (Validator.isNotNull(formName)) {
 			formEventGeneratorOptional = Optional.ofNullable(
-				_formEventGenerators.get(formName));
-
-			if (mode > 0) {
-				FormEventGenerator formEventGeneratorAlternateMode =
-					_formEventGenerators.get(formName + mode);
-
-				if (formEventGeneratorAlternateMode != null) {
-					formEventGeneratorOptional = Optional.of(
-						formEventGeneratorAlternateMode);
-				}
-			}
+				_formEventGenerators.get(formName + mode));
 		}
 
 		analyticsEvents.setMessageContext(
