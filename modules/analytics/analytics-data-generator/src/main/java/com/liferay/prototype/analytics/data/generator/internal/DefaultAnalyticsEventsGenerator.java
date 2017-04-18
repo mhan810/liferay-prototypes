@@ -4,6 +4,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUID;
 import com.liferay.prototype.analytics.data.binding.stubs.AnalyticsEvents;
@@ -22,7 +23,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +102,6 @@ public class DefaultAnalyticsEventsGenerator
 				if (formEventGeneratorAlternateMode != null) {
 					formEventGeneratorOptional = Optional.of(
 						formEventGeneratorAlternateMode);
-
-					System.out.print(
-						"Using mode: " + mode + " for " + formName);
 				}
 			}
 		}
@@ -109,7 +109,8 @@ public class DefaultAnalyticsEventsGenerator
 		analyticsEvents.setMessageContext(
 			createMessageContext(random, formEventGeneratorOptional));
 
-		List<Event> events = createEvents(random, formEventGeneratorOptional);
+		List<Event> events = createEvents(
+			random, formEventGeneratorOptional, mode);
 
 		analyticsEvents.setEvents(events);
 
@@ -161,12 +162,12 @@ public class DefaultAnalyticsEventsGenerator
 	}
 
 	protected List<Event> createEvents(
-		Random random,
-		Optional<FormEventGenerator> formEventGeneratorOptional) {
+		Random random, Optional<FormEventGenerator> formEventGeneratorOptional,
+		int mode) {
 
 		List<Event> events = new ArrayList<>();
 
-		long timestamp = randomTimestampStart(random);
+		long timestamp = randomTimestampStart(random, mode);
 
 		EventBuilder appStartEventBuilder = new EventBuilder(
 			_analyticsEventsGeneratorConfiguration, _dateFormat);
@@ -258,6 +259,15 @@ public class DefaultAnalyticsEventsGenerator
 		return timestamp;
 	}
 
+	protected long getTimeInMillis(Date date, int mode) {
+		Calendar calendar = new GregorianCalendar(TimeZoneUtil.GMT);
+
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, mode);
+
+		return calendar.getTimeInMillis();
+	}
+
 	protected String randomDeviceType(Random random) {
 		String[] deviceTypes =
 			_analyticsEventsGeneratorConfiguration.deviceTypes();
@@ -308,9 +318,17 @@ public class DefaultAnalyticsEventsGenerator
 		return location;
 	}
 
-	protected long randomTimestampStart(Random random) {
-		OptionalLong optionalLong = random.longs(
-			1, _timestampStart.getTime(), _timestampEnd.getTime()).findAny();
+	protected long randomTimestampStart(Random random, int mode) {
+		long start = _timestampStart.getTime();
+		long end = _timestampEnd.getTime();
+
+		if (mode > 0) {
+			start = getTimeInMillis(_timestampStart, mode);
+
+			end = getTimeInMillis(_timestampEnd, mode);
+		}
+
+		OptionalLong optionalLong = random.longs(1, start, end).findAny();
 
 		return optionalLong.orElse(System.currentTimeMillis());
 	}
