@@ -219,11 +219,13 @@ public class ElasticsearchAnalyticsMessageStorage
 	}
 
 	protected String getIndexName() {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+		return _elasticsearchAnalyticsMessageStorageConfiguration.
+			indexNamePrefix();
+		/*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
 
 		return
 			_elasticsearchAnalyticsMessageStorageConfiguration.
-				indexNamePrefix() + simpleDateFormat.format(new Date());
+				indexNamePrefix() + simpleDateFormat.format(new Date());*/
 	}
 
 	protected boolean hasIndex(
