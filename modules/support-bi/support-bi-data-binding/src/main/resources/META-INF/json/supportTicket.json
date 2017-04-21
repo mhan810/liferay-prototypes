@@ -1,0 +1,19 @@
+{
+	"accountCode": "1SYNC",
+	"component": "upgrade",
+	"description": "Hello. we are",
+	"liferayVersion": "6.2 EE",
+	"lppComponents": [
+		"WCM",
+		"Fix Management"
+	],
+	"lppResolution": "Fixed",
+	"lppTicket": "LPP-15693",
+	"status": "closed",
+	"subject": "Issue with upgrade",
+	"supportRegion": "US",
+	"ticketAssignment": "brian.suh",
+	"ticketClosedDate": "2/10/15 8:03:02 PM",
+	"ticketCreateDate": "2/10/15 8:03:02 PM",
+	"ticketNumber": "1SYNC-92"
+}

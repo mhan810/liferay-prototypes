@@ -1,0 +1,34 @@
+apply plugin: 'jsonschema2pojo'
+
+buildscript {
+	dependencies {
+		classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.27'
+	}
+}
+
+dependencies {
+	compile group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.8.7"
+	compile group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.8.7"
+	compile group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.8.7"
+	compile group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-base", version: "2.8.7"
+	compile group: "com.fasterxml.jackson.jaxrs", name: "jackson-jaxrs-json-provider", version: "2.8.7"
+	compile group: "com.fasterxml.jackson.module", name: "jackson-module-jaxb-annotations", version: "2.8.7"
+	compile group: "com.google.code.gson", name: "gson", version: "2.8.0"
+	compile group: "commons-codec", name: "commons-codec", version: "1.9"
+	compile group: "commons-lang", name: "commons-lang", version: "2.6"
+	compile group: "commons-logging", name: "commons-logging", version: "1.2"
+	compile group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+}
+
+jsonSchema2Pojo {
+	source = files("src/main/resources/META-INF/json")
+	targetDirectory = file("src/main/java")
+	targetPackage = 'com.liferay.support.bi.data.binding.stubs'
+	sourceType = 'json'
+	removeOldOutput = false
+}
+
+// Skip clean generated Pojo
+cleanGenerateJsonSchema2Pojo {
+	enabled = false
+}

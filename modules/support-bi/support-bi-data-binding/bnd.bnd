@@ -1,0 +1,38 @@
+Bundle-Name: Support BI Data Binding
+Bundle-SymbolicName: com.liferay.support.bi.data.binding
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.fasterxml.jackson.annotation,\
+	com.fasterxml.jackson.core,\
+	com.fasterxml.jackson.core.base,\
+	com.fasterxml.jackson.core.filter,\
+	com.fasterxml.jackson.core.format,\
+	com.fasterxml.jackson.core.io,\
+	com.fasterxml.jackson.core.json,\
+	com.fasterxml.jackson.core.sym,\
+	com.fasterxml.jackson.core.type,\
+	com.fasterxml.jackson.core.util,\
+	com.fasterxml.jackson.databind,\
+	com.fasterxml.jackson.databind.annotation,\
+	com.fasterxml.jackson.databind.cfg,\
+	com.fasterxml.jackson.databind.deser,\
+	com.fasterxml.jackson.databind.introspect,\
+	com.fasterxml.jackson.databind.jsonFormatVisitors,\
+	com.fasterxml.jackson.databind.jsonschema,\
+	com.fasterxml.jackson.databind.jsontype,\
+	com.fasterxml.jackson.databind.node,\
+	com.fasterxml.jackson.databind.ser,\
+	com.fasterxml.jackson.databind.type,\
+	com.fasterxml.jackson.databind.util,\
+	\
+	com.liferay.support.bi.data.binding,\
+	com.liferay.support.bi.data.binding.stubs
+
+-includeresource:\
+	@jackson-annotations-[0-9]*.jar,\
+	@jackson-core-[0-9]*.jar,\
+	@jackson-databind-[0-9]*.jar,\
+	@jackson-module-jaxb-annotations-[0-9]*.jar,\
+	@jackson-jaxrs-base-[0-9]*.jar,\
+	@jackson-jaxrs-json-provider-[0-9]*.jar,\
+	@gson-[0-9]*.jar
