@@ -1,0 +1,4 @@
+Bundle-Name: Support BI Web
+Bundle-SymbolicName: com.liferay.support.bi.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /support-bi-client-web
