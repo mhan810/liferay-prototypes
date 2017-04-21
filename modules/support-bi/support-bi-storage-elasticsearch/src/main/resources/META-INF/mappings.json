@@ -1,0 +1,70 @@
+{
+	"dynamic_templates": [
+		{
+			"template_": {
+				"mapping": {
+					"store": "true",
+					"type": "text"
+				},
+				"match": "*",
+				"match_mapping_type": "string"
+			},
+			"template_string_sortable": {
+				"mapping": {
+					"index": "not_analyzed",
+					"store": "true",
+					"type": "keyword"
+				},
+				"match": "*_sortable",
+				"match_mapping_type": "keyword"
+			}
+
+		}
+	],
+	"properties": {
+		"accountCode": {
+			"type": "keyword"
+		},
+		"component": {
+			"type": "keyword"
+		},
+		"description": {
+			"type": "text"
+		},
+		"liferayVersion": {
+			"type": "keyword"
+		},
+		"lppComponents": {
+			"type": "keyword"
+		},
+		"lppResolution": {
+			"type": "keyword"
+		},
+		"lppTicket": {
+			"type": "keyword"
+		},
+		"status": {
+			"type": "keyword"
+		},
+		"subject": {
+			"type": "text"
+		},
+		"supportRegion": {
+			"type": "keyword"
+		},
+		"ticketAssignment": {
+			"type": "keyword"
+		},
+		"ticketClosedDate": {
+			"format": "MM/dd/yy HH:mm:ss a",
+			"type": "date"
+		},
+		"ticketCreateDate": {
+			"format": "MM/dd/yy HH:mm:ss a",
+			"type": "date"
+		},
+		"ticketNumber": {
+			"type": "keyword"
+		}
+	}
+}
