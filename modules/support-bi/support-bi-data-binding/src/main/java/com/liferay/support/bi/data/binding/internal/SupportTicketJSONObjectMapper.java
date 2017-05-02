@@ -9,15 +9,20 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.support.bi.data.binding.JSONObjectMapper;
 import com.liferay.support.bi.data.binding.stubs.SupportTicket;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -42,35 +47,27 @@ public class SupportTicketJSONObjectMapper
 
 		ObjectMapper objectMapper = createObjectMapper();
 
-		try (BufferedReader bufferedReader =
-				new BufferedReader(new InputStreamReader(inputStream))) {
+		try (Workbook workbook = WorkbookFactory.create(inputStream)) {
+			Sheet sheet = workbook.getSheetAt(0);
 
-			String line = null;
-
-			while ((line = bufferedReader.readLine()) != null) {
-				//ticketNumber,subject,description,status,ticketAssignee,envLFR,
-
-				// accountCode,supportRegion,component,ticketCreateDate,
-				// ticketClosedDate,LPP Ticket,LPP components,LPP resolution
-
-				String[] tokens = StringUtil.split(line);
-
+			sheet.forEach(row -> {
 				SupportTicket supportTicket = new SupportTicket();
 
-				supportTicket.setTicketNumber(tokens[0]);
-				supportTicket.setSubject(tokens[1]);
-				supportTicket.setDescription(tokens[2]);
-				supportTicket.setStatus(tokens[3]);
-				supportTicket.setTicketAssignment(tokens[4]);
-				supportTicket.setLiferayVersion(tokens[5]);
-				supportTicket.setAccountCode(tokens[6]);
-				supportTicket.setSupportRegion(tokens[7]);
-				supportTicket.setComponent(tokens[8]);
-				supportTicket.setTicketCreateDate(tokens[9]);
-				supportTicket.setTicketClosedDate(tokens[10]);
-				supportTicket.setLppTicket(tokens[11]);
+				supportTicket.setTicketNumber(getCellValue(row, 0));
 
-				String lppComponentsString = tokens[12];
+				supportTicket.setSubject(getCellValue(row, 1));
+				supportTicket.setDescription(getCellValue(row, 2));
+				supportTicket.setStatus(getCellValue(row, 3));
+				supportTicket.setTicketAssignment(getCellValue(row, 4));
+				supportTicket.setLiferayVersion(getCellValue(row, 5));
+				supportTicket.setAccountCode(getCellValue(row, 6));
+				supportTicket.setSupportRegion(getCellValue(row, 7));
+				supportTicket.setComponent(getCellValue(row, 8));
+				supportTicket.setTicketCreateDate(getCellValue(row, 9));
+				supportTicket.setTicketClosedDate(getCellValue(row, 10));
+				supportTicket.setLppTicket(getCellValue(row, 11));
+
+				String lppComponentsString = getCellValue(row, 12);
 
 				if (lppComponentsString.startsWith(StringPool.QUOTE)) {
 					lppComponentsString = lppComponentsString.substring(
@@ -83,7 +80,7 @@ public class SupportTicketJSONObjectMapper
 						Arrays.asList(lppComponents));
 				}
 
-				supportTicket.setLppResolution(tokens[13]);
+				supportTicket.setLppResolution(getCellValue(row, 13));
 
 				try (StringWriter stringWriter = new StringWriter()) {
 					objectMapper.writeValue(stringWriter, supportTicket);
@@ -92,7 +89,13 @@ public class SupportTicketJSONObjectMapper
 
 					jsonObjects.add(stringWriter.toString());
 				}
-			}
+				catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+			});
+		}
+		catch (InvalidFormatException ife) {
+			ife.printStackTrace();
 		}
 
 		return jsonObjects;
@@ -107,6 +110,16 @@ public class SupportTicketJSONObjectMapper
 			DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		return objectMapper;
+	}
+
+	protected String getCellValue(Row row, int index) {
+		Cell cell = row.getCell(index);
+
+		if (cell != null) {
+			return cell.getStringCellValue();
+		}
+
+		return StringPool.BLANK;
 	}
 
 }

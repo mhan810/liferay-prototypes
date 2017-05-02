@@ -29,10 +29,14 @@ Export-Package:\
 	com.liferay.support.bi.data.binding.stubs
 
 -includeresource:\
+	@commons-collections4-[0-9]*.jar,\
+	@gson-[0-9]*.jar,\
 	@jackson-annotations-[0-9]*.jar,\
 	@jackson-core-[0-9]*.jar,\
 	@jackson-databind-[0-9]*.jar,\
 	@jackson-module-jaxb-annotations-[0-9]*.jar,\
 	@jackson-jaxrs-base-[0-9]*.jar,\
 	@jackson-jaxrs-json-provider-[0-9]*.jar,\
-	@gson-[0-9]*.jar
+	@poi-[0-9]*.jar,\
+	@poi-ooxml-[0-9]*.jar,\
+	@poi-ooxml-schemas-[0-9]*.jar

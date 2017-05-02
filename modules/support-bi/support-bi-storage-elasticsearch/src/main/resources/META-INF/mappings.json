@@ -1,14 +1,16 @@
 {
 	"dynamic_templates": [
 		{
-			"template_": {
+			"template_string": {
 				"mapping": {
 					"store": "true",
 					"type": "text"
 				},
 				"match": "*",
 				"match_mapping_type": "string"
-			},
+			}
+		},
+		{
 			"template_string_sortable": {
 				"mapping": {
 					"index": "not_analyzed",

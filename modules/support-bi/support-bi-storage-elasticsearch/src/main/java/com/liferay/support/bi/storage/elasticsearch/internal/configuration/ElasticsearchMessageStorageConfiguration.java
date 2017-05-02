@@ -17,7 +17,7 @@ public interface ElasticsearchMessageStorageConfiguration {
 	@Meta.AD(deflt = "AnalyticsPrototype", required = false)
 	public String clusterName();
 
-	@Meta.AD(deflt = "supportBI", required = false)
+	@Meta.AD(deflt = "supportbi", required = false)
 	public String indexNamePrefix();
 
 	@Meta.AD(deflt = "localhost:9353", required = false)
