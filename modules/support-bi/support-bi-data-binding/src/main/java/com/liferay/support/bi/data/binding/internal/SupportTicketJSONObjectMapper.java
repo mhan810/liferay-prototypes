@@ -13,12 +13,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -53,21 +57,21 @@ public class SupportTicketJSONObjectMapper
 			sheet.forEach(row -> {
 				SupportTicket supportTicket = new SupportTicket();
 
-				supportTicket.setTicketNumber(getCellValue(row, 0));
+				supportTicket.setTicketNumber(getCellValue(row, 0, false));
 
-				supportTicket.setSubject(getCellValue(row, 1));
-				supportTicket.setDescription(getCellValue(row, 2));
-				supportTicket.setStatus(getCellValue(row, 3));
-				supportTicket.setTicketAssignment(getCellValue(row, 4));
-				supportTicket.setLiferayVersion(getCellValue(row, 5));
-				supportTicket.setAccountCode(getCellValue(row, 6));
-				supportTicket.setSupportRegion(getCellValue(row, 7));
-				supportTicket.setComponent(getCellValue(row, 8));
-				supportTicket.setTicketCreateDate(getCellValue(row, 9));
-				supportTicket.setTicketClosedDate(getCellValue(row, 10));
-				supportTicket.setLppTicket(getCellValue(row, 11));
+				supportTicket.setSubject(getCellValue(row, 1, false));
+				supportTicket.setDescription(getCellValue(row, 2, false));
+				supportTicket.setStatus(getCellValue(row, 3, false));
+				supportTicket.setTicketAssignment(getCellValue(row, 4, false));
+				supportTicket.setLiferayVersion(getCellValue(row, 5, false));
+				supportTicket.setAccountCode(getCellValue(row, 6, false));
+				supportTicket.setSupportRegion(getCellValue(row, 7, false));
+				supportTicket.setComponent(getCellValue(row, 8, false));
+				supportTicket.setTicketCreateDate(getCellValue(row, 9, true));
+				supportTicket.setTicketClosedDate(getCellValue(row, 10, true));
+				supportTicket.setLppTicket(getCellValue(row, 11, false));
 
-				String lppComponentsString = getCellValue(row, 12);
+				String lppComponentsString = getCellValue(row, 12, false);
 
 				if (lppComponentsString.startsWith(StringPool.QUOTE)) {
 					lppComponentsString = lppComponentsString.substring(
@@ -80,7 +84,7 @@ public class SupportTicketJSONObjectMapper
 						Arrays.asList(lppComponents));
 				}
 
-				supportTicket.setLppResolution(getCellValue(row, 13));
+				supportTicket.setLppResolution(getCellValue(row, 13, false));
 
 				try (StringWriter stringWriter = new StringWriter()) {
 					objectMapper.writeValue(stringWriter, supportTicket);
@@ -112,11 +116,30 @@ public class SupportTicketJSONObjectMapper
 		return objectMapper;
 	}
 
-	protected String getCellValue(Row row, int index) {
+	protected String getCellValue(Row row, int index, boolean date) {
 		Cell cell = row.getCell(index);
 
-		if (cell != null) {
-			return cell.getStringCellValue();
+		if (cell == null) {
+			return StringPool.BLANK;
+		}
+
+		CellType cellType = cell.getCellTypeEnum();
+
+		if (cellType.equals(CellType.NUMERIC)) {
+			if (date) {
+				DateFormat dateFormat = new SimpleDateFormat(
+					"MM/dd/yy HH:mm:ss a");
+
+				return dateFormat.format(cell.getDateCellValue());
+			}
+
+			return String.valueOf(cell.getNumericCellValue());
+		}
+		else if (cellType.equals(CellType.BOOLEAN)) {
+			return String.valueOf(cell.getBooleanCellValue());
+		}
+		else if (cellType.equals(CellType.STRING)) {
+			return String.valueOf(cell.getStringCellValue());
 		}
 
 		return StringPool.BLANK;

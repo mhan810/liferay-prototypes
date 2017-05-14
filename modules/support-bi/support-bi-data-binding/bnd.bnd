@@ -27,9 +27,35 @@ Export-Package:\
 	\
 	com.liferay.support.bi.data.binding,\
 	com.liferay.support.bi.data.binding.stubs
+Import-Package:\
+	!com.graphbuilder.*,\
+	\
+	!com.microsoft.*,\
+	\
+	!com.sun.javadoc.*,\
+	!com.sun.tools.javadoc.*,\
+	\
+	!junit.*,\
+	\
+	!org.apache.crimson.*,\
+	!org.apache.jcp.xml.dsig.*,\
+	!org.apache.poi.hsmf.*,\
+	!org.apache.poi.hwpf.*,\
+	!org.apache.tools.ant.*,\
+	!org.apache.xml.resolver.*,\
+	!org.apache.xml.security.*,\
+	\
+	!org.bouncycastle.*,\
+	\
+	!org.etsi.*,\
+	\
+	!org.junit.*,\
+	*
 
 -includeresource:\
+	@commons-codec-[0-9]*.jar,\
 	@commons-collections4-[0-9]*.jar,\
+	@curvesapi-[0-9]*.jar,\
 	@gson-[0-9]*.jar,\
 	@jackson-annotations-[0-9]*.jar,\
 	@jackson-core-[0-9]*.jar,\
@@ -37,6 +63,8 @@ Export-Package:\
 	@jackson-module-jaxb-annotations-[0-9]*.jar,\
 	@jackson-jaxrs-base-[0-9]*.jar,\
 	@jackson-jaxrs-json-provider-[0-9]*.jar,\
+	@ooxml-schemas-[0-9]*.jar,\
 	@poi-[0-9]*.jar,\
 	@poi-ooxml-[0-9]*.jar,\
-	@poi-ooxml-schemas-[0-9]*.jar
+	@poi-ooxml-schemas-[0-9]*.jar,\
+	@xmlbeans-[0-9]*.jar
