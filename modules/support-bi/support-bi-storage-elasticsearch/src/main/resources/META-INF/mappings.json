@@ -13,7 +13,6 @@
 		{
 			"template_string_sortable": {
 				"mapping": {
-					"index": "not_analyzed",
 					"store": "true",
 					"type": "keyword"
 				},
