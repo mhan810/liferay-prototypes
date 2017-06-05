@@ -28,6 +28,8 @@ Export-Package:\
 	com.liferay.support.bi.data.binding,\
 	com.liferay.support.bi.data.binding.stubs
 Import-Package:\
+	!com.google.common.collect.*,\
+	\
 	!com.graphbuilder.*,\
 	\
 	!com.microsoft.*,\
@@ -38,6 +40,7 @@ Import-Package:\
 	!junit.*,\
 	\
 	!org.apache.crimson.*,\
+	!org.apache.cxf.jaxrs.client.*,\
 	!org.apache.jcp.xml.dsig.*,\
 	!org.apache.poi.hsmf.*,\
 	!org.apache.poi.hwpf.*,\
@@ -67,4 +70,7 @@ Import-Package:\
 	@poi-[0-9]*.jar,\
 	@poi-ooxml-[0-9]*.jar,\
 	@poi-ooxml-schemas-[0-9]*.jar,\
+	@tika-langdetect-[0-9]*.jar,\
+	@language-detector-[0-9]*.jar,\
+	@guava-[0-9]*.jar,\
 	@xmlbeans-[0-9]*.jar

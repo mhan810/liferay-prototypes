@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslator;
+import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.support.bi.data.binding.JSONObjectMapper;
@@ -27,7 +29,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.tika.langdetect.OptimaizeLangDetector;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -43,6 +47,13 @@ import org.osgi.service.component.annotations.Component;
 public class SupportTicketJSONObjectMapper
 	implements JSONObjectMapper<SupportTicket> {
 
+	@Activate
+	public void activate() throws Exception {
+		_translator = MicrosoftTranslatorFactoryUtil.getMicrosoftTranslator();
+		_detector = new OptimaizeLangDetector();
+		_detector.loadModels();
+	}
+
 	@Override
 	public Collection<String> convert(InputStream inputStream)
 		throws IOException {
@@ -57,21 +68,30 @@ public class SupportTicketJSONObjectMapper
 			sheet.forEach(row -> {
 				SupportTicket supportTicket = new SupportTicket();
 
-				supportTicket.setTicketNumber(getCellValue(row, 0, false));
+				supportTicket.setAccountCode(getCellValue(row, 0, false));
+				supportTicket.setComponent(getCellValue(row, 1, false));
+				supportTicket.setDescription(
+					translateTo(getCellValue(row, 2, false), "en"));
+				supportTicket.setLiferayVersion(getCellValue(row, 6, false));
+				supportTicket.setLppTicket(getCellValue(row, 7, false));
+				supportTicket.setStatus(getCellValue(row, 8, false));
+				supportTicket.setSubject(getCellValue(row, 9, false));
+				supportTicket.setSupportRegion(getCellValue(row, 10, false));
+				supportTicket.setTicketAssignment(getCellValue(row, 11, false));
+				supportTicket.setTicketCreateDate(getCellValue(row, 13, true));
+				supportTicket.setTicketNumber(getCellValue(row, 14, false));
+				supportTicket.setLppResolution(getCellValue(row, 16, false));
 
-				supportTicket.setSubject(getCellValue(row, 1, false));
-				supportTicket.setDescription(getCellValue(row, 2, false));
-				supportTicket.setStatus(getCellValue(row, 3, false));
-				supportTicket.setTicketAssignment(getCellValue(row, 4, false));
-				supportTicket.setLiferayVersion(getCellValue(row, 5, false));
-				supportTicket.setAccountCode(getCellValue(row, 6, false));
-				supportTicket.setSupportRegion(getCellValue(row, 7, false));
-				supportTicket.setComponent(getCellValue(row, 8, false));
-				supportTicket.setTicketCreateDate(getCellValue(row, 9, true));
-				supportTicket.setTicketClosedDate(getCellValue(row, 10, true));
-				supportTicket.setLppTicket(getCellValue(row, 11, false));
+				String closedDate = getCellValue(row, 12, true);
 
-				String lppComponentsString = getCellValue(row, 12, false);
+				if (closedDate.isEmpty()) {
+					supportTicket.setTicketClosedDate(null);
+				}
+				else {
+					supportTicket.setTicketClosedDate(closedDate);
+				}
+
+				String lppComponentsString = getCellValue(row, 15, false);
 
 				if (lppComponentsString.startsWith(StringPool.QUOTE)) {
 					lppComponentsString = lppComponentsString.substring(
@@ -83,8 +103,6 @@ public class SupportTicketJSONObjectMapper
 					supportTicket.setLppComponents(
 						Arrays.asList(lppComponents));
 				}
-
-				supportTicket.setLppResolution(getCellValue(row, 13, false));
 
 				try (StringWriter stringWriter = new StringWriter()) {
 					objectMapper.writeValue(stringWriter, supportTicket);
@@ -144,5 +162,25 @@ public class SupportTicketJSONObjectMapper
 
 		return StringPool.BLANK;
 	}
+
+	private String translateTo(String text, String desiredLanguage) {
+		String curLanguage = _detector.detect(text).getLanguage();
+
+		if (!curLanguage.equals(desiredLanguage)) {
+			try {
+				return _translator.translate(
+					curLanguage, desiredLanguage, text);
+			}
+			catch (Exception e) {
+				System.out.print(
+					"Failed to translate document, returning original text.\n");
+			}
+		}
+
+		return text;
+	}
+
+	private OptimaizeLangDetector _detector;
+	private MicrosoftTranslator _translator;
 
 }
