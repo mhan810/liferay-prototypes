@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -106,7 +107,7 @@ public class SupportTicketJSONObjectMapper
 						Arrays.asList(lppComponents));
 				}
 
-				translateSupportTicket(supportTicket);
+				translate(supportTicket);
 
 				try (StringWriter stringWriter = new StringWriter()) {
 					objectMapper.writeValue(stringWriter, supportTicket);
@@ -125,13 +126,6 @@ public class SupportTicketJSONObjectMapper
 		}
 
 		return jsonObjects;
-	}
-
-	protected void translateSupportTicket(SupportTicket supportTicket) {
-		String translatedDescription =
-			translateTo(supportTicket.getDescription(), "en");
-
-		supportTicket.setDescription(translatedDescription);
 	}
 
 	protected ObjectMapper createObjectMapper() {
@@ -174,21 +168,33 @@ public class SupportTicketJSONObjectMapper
 		return StringPool.BLANK;
 	}
 
-	private String translateTo(String text, String desiredLanguage) {
-		String curLanguage = _detector.detect(text).getLanguage();
+	protected String translate(String text, String desiredLanguage) {
+		Locale locale = _detector.detect(text);
 
-		if (!curLanguage.equals(desiredLanguage)) {
-			try {
-				return _microsoftTranslator.translate(
-					curLanguage, desiredLanguage, text);
-			}
-			catch (Exception e) {
-				System.out.print(
-					"Failed to translate document, returning original text.\n");
+		String curLanguage = locale.getLanguage();
+
+		if (curLanguage.equals(desiredLanguage)) {
+			return text;
+		}
+
+		try {
+			return _microsoftTranslator.translate(
+				curLanguage, desiredLanguage, text);
+		}
+		catch (Exception e) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to translate text", e);
 			}
 		}
 
 		return text;
+	}
+
+	protected void translate(SupportTicket supportTicket) {
+		String translatedDescription =
+			translate(supportTicket.getDescription(), "en");
+
+		supportTicket.setDescription(translatedDescription);
 	}
 
 	private OptimaizeLangDetector _detector;
