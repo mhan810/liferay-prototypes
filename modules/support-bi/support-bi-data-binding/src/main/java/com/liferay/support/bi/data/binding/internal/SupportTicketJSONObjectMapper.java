@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslator;
-import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslatorFactoryUtil;
+import com.liferay.portal.kernel.microsofttranslator.MicrosoftTranslatorFactory;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.support.bi.data.binding.JSONObjectMapper;
@@ -33,6 +33,7 @@ import org.apache.tika.langdetect.OptimaizeLangDetector;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -49,9 +50,11 @@ public class SupportTicketJSONObjectMapper
 
 	@Activate
 	public void activate() throws Exception {
-		_translator = MicrosoftTranslatorFactoryUtil.getMicrosoftTranslator();
 		_detector = new OptimaizeLangDetector();
+
 		_detector.loadModels();
+
+		_microsoftTranslator = _microsoftTranslatorFactory.getMicrosoftTranslator();
 	}
 
 	@Override
@@ -168,7 +171,7 @@ public class SupportTicketJSONObjectMapper
 
 		if (!curLanguage.equals(desiredLanguage)) {
 			try {
-				return _translator.translate(
+				return _microsoftTranslator.translate(
 					curLanguage, desiredLanguage, text);
 			}
 			catch (Exception e) {
@@ -181,6 +184,10 @@ public class SupportTicketJSONObjectMapper
 	}
 
 	private OptimaizeLangDetector _detector;
-	private MicrosoftTranslator _translator;
+
+	@Reference
+	private MicrosoftTranslatorFactory _microsoftTranslatorFactory;
+
+	private MicrosoftTranslator _microsoftTranslator;
 
 }
