@@ -73,8 +73,7 @@ public class SupportTicketJSONObjectMapper
 
 				supportTicket.setAccountCode(getCellValue(row, 0, false));
 				supportTicket.setComponent(getCellValue(row, 1, false));
-				supportTicket.setDescription(
-					translateTo(getCellValue(row, 2, false), "en"));
+				supportTicket.setDescription(getCellValue(row, 2, false));
 				supportTicket.setLiferayVersion(getCellValue(row, 6, false));
 				supportTicket.setLppTicket(getCellValue(row, 7, false));
 				supportTicket.setStatus(getCellValue(row, 8, false));
@@ -107,6 +106,8 @@ public class SupportTicketJSONObjectMapper
 						Arrays.asList(lppComponents));
 				}
 
+				translateSupportTicket(supportTicket);
+
 				try (StringWriter stringWriter = new StringWriter()) {
 					objectMapper.writeValue(stringWriter, supportTicket);
 
@@ -124,6 +125,13 @@ public class SupportTicketJSONObjectMapper
 		}
 
 		return jsonObjects;
+	}
+
+	protected void translateSupportTicket(SupportTicket supportTicket) {
+		String translatedDescription =
+			translateTo(supportTicket.getDescription(), "en");
+
+		supportTicket.setDescription(translatedDescription);
 	}
 
 	protected ObjectMapper createObjectMapper() {
